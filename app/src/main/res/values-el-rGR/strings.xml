@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkgNight</string>
+    <string name="open">Είσοδος</string>
+    <string name="close">Έξοδος</string>
+    <string name="profile_picture">Φωτογραφία Προφίλ</string>
+    <string name="name">Όνομα</string>
+    <string name="Εmail">Ε-mail</string>
+    <string name="description">Περιγραφή</string>
+    <string name="facebook_page">Facebook</string>
+    <string name="phone">Τηλέφωνο</string>
+    <string name="save_changes">Αποθήκευση αλλαγών</string>
+    <string name="instagram_page">Instagram</string>
+    <string name="location">Τοποθεσία</string>
+    <string name="exit">Έξοδος</string>
+    <string name="newevent">Νέα Εκδήλωση</string>
+    <string name="password">Κωδικός</string>
+    <string name="register">Δημιουργία λογαριασμού</string>
+    <string name="Login">Είσοδος</string>
+    <string name="hour">Ώρα</string>
+    <string name="save">Αποθήκευση</string>
+    <string name="uploadPhoto">Εισάγετε φωτογραφία</string>
+    <string name="date">Ημερομηνία</string>
+    <string name="lastname">Επίθετο</string>
+    <string name="owner">Ιδιοκτήτης καταστήματος;</string>
+    <string name="re_enter_password">Ξαναβάλτε το κωδικό σας</string>
+    <string name="changepassword">Αλλαγή Κωδικού</string>
+    <string name="enter_new_password">Βάλτε τον καινούργιο κωδικό</string>
+    <string name="enter_old_password">Βάλτε τον παλιό κωδικό</string>
+    <string name="shop_title">Τίτλος Μαγαζιού</string>
+    <string name="loginregister">Είσοδος/Εγγραφή</string>
+    <string name="myprofile">Το προφίλ μου</string>
+</resources>
