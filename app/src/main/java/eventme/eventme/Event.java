@@ -1,7 +1,6 @@
 package eventme.eventme;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+
 
 
 /**
@@ -9,25 +8,22 @@ import android.graphics.drawable.Drawable;
  */
 
 public class Event {
-    private Bitmap image;
-    private String e,date,time,location,description;
-    public  Event(String email,String d, String t, String l, String de,Bitmap im) //Constructor
+    private String email,date,time,location,description;
+    public Event()
+    {}
+    public Event(String e,String d, String t, String l, String de) //Constructor
     {
-        image=im;
+
         date=d;
         time=t;
         location=l;
         description=de;
-        e=email;
+        email=e;
     }
 
     public String getemail()
     {
-        return e;
-    }
-    public Bitmap getImage()
-    {
-        return image;
+        return email;
     }
     public String getDate()
     {

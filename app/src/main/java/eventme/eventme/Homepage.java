@@ -16,10 +16,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,21 +38,18 @@ public class Homepage extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private NavigationView navigationView;
     private ListView list;
-    private ArrayList<Event> events;
-    private EventDatabase eventdb;
-    private LoginDataBaseAdapter users;
+    private ArrayList<Event> events=new ArrayList<>();
+
     private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String email = preferences.getString("email", "");
-        eventdb=new EventDatabase(this);
-        eventdb=eventdb.open();
-        users=new LoginDataBaseAdapter(this);
-        users=users.open();
-        events=new ArrayList();
+
+
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawerLayout);
         mToggle=new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -75,7 +80,7 @@ public class Homepage extends AppCompatActivity {
                 }
                 else if(item.getItemId()==R.id.nav_profile)
                 {
-                    Intent intent = new Intent(Homepage.this, UserProfile.class);
+                    Intent intent = new Intent(Homepage.this, Profile.class);
                     startActivity(intent);
                 }
                 return true;
@@ -87,38 +92,73 @@ public class Homepage extends AppCompatActivity {
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
         }
-        if(users.isowner(email))
-        {
+
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("email","");
             editor.apply();
             navigationView.getMenu().findItem(R.id.nav_login).setVisible(true);
             navigationView.getMenu().findItem(R.id.nav_logout).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_profile).setVisible(false);
-            Intent intent = new Intent(Homepage.this, editProfile.class);
+            Intent intent = new Intent(Homepage.this, profileEdit.class);
             startActivity(intent);
-        }
-        events=eventdb.getRows();
+
+
+
         //title θα μπει η arraylist με τα μαγαζια , imageId οι φωτο από τα μαγαζιά
-        String[] title=new String[events.size()];
-        Bitmap[] imageId = new Bitmap[events.size()];
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        for(int i=0;i<events.size();i++)
-        {
-            title[i]=events.get(i).getDescription();
-            imageId[i]=events.get(i).getImage();
-        }
+        DatabaseReference ref = database.getReference();
 
-        CustomList adapter = new CustomList(Homepage.this, title, imageId);
+        ref.addChildEventListener(new ChildEventListener()  {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                events.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    Event e=ds.getValue(Event.class);
+                    events.add(e);
+
+                }
+                CustomList adapter = new CustomList(Homepage.this,events);
+                list.setAdapter(adapter);
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                events.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    Event e=ds.getValue(Event.class);
+                    events.add(e);
+
+                }
+                CustomList adapter = new CustomList(Homepage.this,events);
+                list.setAdapter(adapter);
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+            }
+        });
+
         list=(ListView)findViewById(R.id.list);
-        list.setAdapter(adapter);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Intent intent = new Intent(Homepage.this, showEvent.class);
-                intent.putExtra("MyClass", position);
+                intent.putExtra("Date", events.get(position).getDate());
+                intent.putExtra("Time", events.get(position).getTime());
+                intent.putExtra("Location", events.get(position).getLocation());
+                intent.putExtra("Description", events.get(position).getDescription());
+                intent.putExtra("Email", events.get(position).getemail());
                 startActivity(intent);
 
             }
@@ -150,8 +190,8 @@ public class Homepage extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Close The Database
-        eventdb.close();
-        users.close();
+
+
     }
 
 }

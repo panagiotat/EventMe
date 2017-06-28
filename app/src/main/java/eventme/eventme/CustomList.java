@@ -6,25 +6,38 @@ package eventme.eventme;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomList extends ArrayAdapter<String>{
+import java.util.ArrayList;
+
+public class CustomList extends BaseAdapter {
 
     private final Activity context;
-    private final String[] web;
-    private final Bitmap[] imageId;
-    public CustomList(Activity context,
-                      String[] web,Bitmap[] imageId) {
-        super(context, R.layout.list_row, web);
+    ArrayList<Event> events;
+    public CustomList(Activity context, ArrayList<Event> events) {
         this.context = context;
-        this.web = web;
-        this.imageId = imageId;
+        this.events=events;
 
+
+    }
+    @Override
+    public int getCount() {
+        return events.size();
+    }
+    @Override
+    public Object getItem(int position) {
+        return events.get(position);
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
     @Override
     public View getView(int position, View view, ViewGroup parent) {
@@ -33,9 +46,9 @@ public class CustomList extends ArrayAdapter<String>{
         TextView txtTitle = (TextView) rowView.findViewById(R.id.title);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
-        txtTitle.setText(web[position]);
+        txtTitle.setText(events.get(position).getDescription());
 
-        imageView.setImageBitmap(imageId[position]);
+        //imageView.setImageBitmap(imageId[position]);
         return rowView;
     }
 }

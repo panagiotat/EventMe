@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    android:orientation="vertical"
+    tools:context="eventme.eventme.editProfile">
+
+
+    <ImageButton
+
+        android:id="@+id/userphoto"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_weight="2"
+        android:background="@android:color/transparent"
+        android:onClick="changePhoto"
+        android:src="@drawable/profile"
+        tools:ignore="ContentDescription,NestedWeights" />
+
+    <EditText
+        android:textColor="#000000"
+        android:id="@+id/etonoma"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:hint="@string/name"
+        />
+
+        <EditText
+            android:id="@+id/etemail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:hint="@string/email"
+            android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/etcode"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:hint="@string/code"
+        android:inputType="textPassword"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:text="@string/save_changes"
+            android:textAllCaps="false"
+
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:backgroundTint="@android:color/black"
+            tools:ignore="UnusedAttribute"
+            android:onClick="saveChanges"/>
+
+    </LinearLayout>
+</LinearLayout>

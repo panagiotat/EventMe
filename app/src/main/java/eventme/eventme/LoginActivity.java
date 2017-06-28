@@ -25,15 +25,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText _passwordText;
     private Button _loginButton;
     private TextView _signupLink;
-    private LoginDataBaseAdapter loginDataBaseAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // create a instance of SQLite Database
-        loginDataBaseAdapter=new LoginDataBaseAdapter(this);
-        loginDataBaseAdapter=loginDataBaseAdapter.open();
+
 
         _passwordText=(EditText) findViewById(R.id.input_password);
         _email= (EditText) findViewById(R.id.email);
@@ -82,19 +81,11 @@ public class LoginActivity extends AppCompatActivity {
             editor.apply();
 
 
-            boolean m  = loginDataBaseAdapter.isowner(email);
-            if (m) {
 
-                Intent intent = new Intent(LoginActivity.this, editProfile.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } else {
-
-                Intent intent = new Intent(LoginActivity.this, Homepage.class);
+                Intent intent = new Intent(LoginActivity.this,Profile.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
 
-            }
         }
         else
         {
@@ -136,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
 public boolean logUser(String email,String password){
     // fetch the Password form database for respective user name
-    String storedPassword=loginDataBaseAdapter.getSinlgeEntry(email);
+    String storedPassword="1234";
     // check if the Stored password matches with  Password entered by user
     if(password.equals(storedPassword))
     {
@@ -151,7 +142,7 @@ public boolean logUser(String email,String password){
     protected void onDestroy() {
         super.onDestroy();
         // Close The Database
-        loginDataBaseAdapter.close();
+
     }
 
 }

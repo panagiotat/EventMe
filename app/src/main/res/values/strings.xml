@@ -5,10 +5,13 @@
     <string name="close">Close</string>
     <string name="profile_picture">Profile picture</string>
     <string name="name">Name</string>
-    <string name="Εmail">Ε-mail</string>
+    <string name="email">Ε-mail</string>
+    <string name="changepic">Change Picture</string>
+    <string name="code">Password</string>
     <string name="description">Description</string>
     <string name="facebook_page">Facebook Page</string>
     <string name="phone">Phone</string>
+    <string name="edit">Edit Profile</string>
     <string name="save_changes">Save Changes</string>
     <string name="instagram_page">Instagram page</string>
     <string name="location">Location</string>
@@ -30,4 +33,5 @@
     <string name="shop_title">Shop\'s title</string>
     <string name="loginregister">Login/Register</string>
     <string name="myprofile">My profile</string>
+    <string name="title_activity_user_profile1">UserProfile1</string>
 </resources>

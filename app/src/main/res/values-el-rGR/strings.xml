@@ -6,7 +6,10 @@
     <string name="profile_picture">Φωτογραφία Προφίλ</string>
     <string name="name">Όνομα</string>
     <string name="Εmail">Ε-mail</string>
+    <string name="edit">Επεξεργασία</string>
     <string name="description">Περιγραφή</string>
+    <string name="changepic">Αλλαγή Εικόνας</string>
+    <string name="code">Κωδικός</string>
     <string name="facebook_page">Facebook</string>
     <string name="phone">Τηλέφωνο</string>
     <string name="save_changes">Αποθήκευση αλλαγών</string>

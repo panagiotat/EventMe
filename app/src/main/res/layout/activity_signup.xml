@@ -56,7 +56,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/Εmail"
+                android:hint="@string/email"
                 android:inputType="textWebEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
@@ -87,11 +87,6 @@
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
-        <CheckBox
-            android:text="@string/owner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_signup"

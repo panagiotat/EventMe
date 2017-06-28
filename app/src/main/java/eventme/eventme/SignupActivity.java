@@ -29,15 +29,13 @@ public class SignupActivity extends AppCompatActivity {
     private EditText _reEnterPasswordText;
     private  Button _signupButton;
     private TextView _loginLink;
-    private CheckBox _checkBox;
-    LoginDataBaseAdapter loginDataBaseAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         // get Instance  of Database Adapter
-        loginDataBaseAdapter=new LoginDataBaseAdapter(this);
-        loginDataBaseAdapter=loginDataBaseAdapter.open();
+
 
          _nameText=(EditText) findViewById(R.id.name);
         _emailText=(EditText) findViewById(R.id.email);
@@ -45,7 +43,6 @@ public class SignupActivity extends AppCompatActivity {
          _passwordText=(EditText) findViewById(R.id.input_password);
          _reEnterPasswordText=(EditText) findViewById(R.id.input_reEnterPassword);
         _signupButton=(Button) findViewById(R.id.btn_signup);
-        _checkBox=(CheckBox) findViewById(R.id.checkBox);
         _loginLink=(TextView) findViewById(R.id.link_login);
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,32 +90,15 @@ public class SignupActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String surname = _surnameText.getText().toString();
         String password = _passwordText.getText().toString();
-        boolean is = _checkBox.isChecked();
-        String isowner;
 
-        if(is){
-            isowner="true";
-        }else { isowner="false";}
-
-        loginDataBaseAdapter.insertEntry(email, password,name,surname, isowner);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("email",email);
         editor.apply();
 
-
-        if ( isowner.equals("true")) {
-
-            Intent intent = new Intent(SignupActivity.this, editProfile.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        } else {
-
             Intent intent = new Intent(SignupActivity.this, Homepage.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-
-        }
 
     }
 
@@ -182,6 +162,6 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        loginDataBaseAdapter.close();
+
     }
 }

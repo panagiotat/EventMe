@@ -25,6 +25,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -33,9 +36,9 @@ public class NewEvent extends AppCompatActivity {
     private ImageButton buttonUploadImage;
     private Button DateButton,TimeButton,SaveTimeButton,LocationButton,SaveButton;
     private CalendarView calender;
+    private DatabaseReference database;
     private TimePicker editTime;
     private EditText editText;
-    private EventDatabase events;
     private SharedPreferences preferences;
     String email;
     @Override
@@ -43,8 +46,9 @@ public class NewEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
-        events=new EventDatabase(this);
-        events=events.open();
+
+
+
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email = preferences.getString("email", "");
@@ -164,10 +168,16 @@ public class NewEvent extends AppCompatActivity {
     }
     public void Done(View v) // Click the button for share the event
     {
-        DbBitmapUtility b=new DbBitmapUtility();
-        Bitmap a=((BitmapDrawable)buttonUploadImage.getDrawable()).getBitmap();
-        events.insertEntry(email,TimeButton.getText().toString(),DateButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString(),b.getBytes(a));
-        Intent intent = new Intent(NewEvent.this,editProfile.class);
+        database= FirebaseDatabase.getInstance().getReference();
+        Task t=new Task(database);
+        t.setEvent(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));//((BitmapDrawable)buttonUploadImage.getDrawable()).getBitmap()));
+       // t.setTime(TimeButton.getText().toString());
+        //t.setDate(DateButton.getText().toString());
+        //t.setLocation(LocationButton.getText().toString());
+        //t.setDescription(editText.getText().toString());
+        //t.setPhone("");
+        //t.setImage(((BitmapDrawable)buttonUploadImage.getDrawable()).getBitmap());
+        Intent intent = new Intent(NewEvent.this,profileEdit.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -175,6 +185,6 @@ public class NewEvent extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Close The Database
-        events.close();
+
     }
 }
