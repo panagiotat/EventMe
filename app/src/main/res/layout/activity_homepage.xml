@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="eventme.eventme.Homepage"
     android:id="@+id/drawerLayout"
-    android:background="@android:color/darker_gray">
+    android:background="@drawable/backphoto">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
