@@ -44,7 +44,7 @@
             android:background="@drawable/edittextstyle"
             android:gravity="top" />
 
-        <ImageButton
+        <ImageView
             android:layout_width="match_parent"
             app:srcCompat="@drawable/fileupload"
             android:id="@+id/UploadButton"
