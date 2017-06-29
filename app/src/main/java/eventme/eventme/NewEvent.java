@@ -1,39 +1,36 @@
 package eventme.eventme;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
-import android.util.EventLogTags;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.Serializable;
-import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
 
 public class NewEvent extends AppCompatActivity {
     private static int RESULT_LOAD_IMAGE = 1;
-    private ImageButton buttonUploadImage;
+
+    private ImageView buttonUploadImage;
+    private  static final int SELECT_PICTURE = 0 ;
+
     private Button DateButton,TimeButton,SaveTimeButton,LocationButton,SaveButton;
     private CalendarView calender;
     private DatabaseReference database;
@@ -46,14 +43,18 @@ public class NewEvent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
-
-
-
-
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email = preferences.getString("email", "");
 
-        buttonUploadImage = (ImageButton) findViewById(R.id.UploadButton);
+        buttonUploadImage = (ImageView) findViewById(R.id.UploadButton);
+        buttonUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                selectImage();
+            }
+
+        });
+
         DateButton=(Button) findViewById(R.id.DateButton);
         TimeButton=(Button) findViewById(R.id.TimeButton);
         SaveButton=(Button) findViewById(R.id.SaveBtn);
@@ -98,8 +99,31 @@ public class NewEvent extends AppCompatActivity {
 
         }
 
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+
+                //Get ImageURi and load with help of picasso
+
+                Picasso.with(NewEvent.this).load(data.getData()).centerInside().fit()
+                        .into((ImageView) findViewById(R.id.UploadButton));
+            }
+            //Bitmap bitmap = getPath(data.getData());
+            //buttonUploadImage.setImageBitmap(bitmap);
+
+        }
+
 
     }
+
+    private void selectImage() {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }
+
+
     public void ClickDate(View v) // Click the button Date
     {
         DateButton.setEnabled(false);DateButton.setVisibility(View.INVISIBLE);
