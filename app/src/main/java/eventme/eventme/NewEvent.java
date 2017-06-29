@@ -3,17 +3,20 @@ package eventme.eventme;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+
+import android.graphics.Bitmap;
+
+
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -21,13 +24,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class NewEvent extends AppCompatActivity {
-    private static int RESULT_LOAD_IMAGE = 1;
+import java.io.ByteArrayOutputStream;
 
+
+public class NewEvent extends AppCompatActivity {
+    private StorageReference mStorageRef;
     private ImageView buttonUploadImage;
     private  static final int SELECT_PICTURE = 0 ;
 
@@ -65,19 +75,6 @@ public class NewEvent extends AppCompatActivity {
         SaveTimeButton.setVisibility(View.INVISIBLE);
         editTime=(TimePicker)findViewById(R.id.timePicker);
         editTime.setVisibility(View.INVISIBLE);
-        buttonUploadImage.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) { //Upload Image from Gallery
-
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-                buttonUploadImage.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-        });
         editText=(EditText) findViewById(R.id.editText);
 
     }
@@ -85,27 +82,12 @@ public class NewEvent extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            buttonUploadImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-        }
-
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
 
                 //Get ImageURi and load with help of picasso
 
-                Picasso.with(NewEvent.this).load(data.getData()).centerInside().fit()
-                        .into((ImageView) findViewById(R.id.UploadButton));
+                Picasso.with(NewEvent.this).load(data.getData()).centerInside().fit().into(buttonUploadImage);
             }
             //Bitmap bitmap = getPath(data.getData());
             //buttonUploadImage.setImageBitmap(bitmap);
@@ -194,13 +176,29 @@ public class NewEvent extends AppCompatActivity {
     {
         database= FirebaseDatabase.getInstance().getReference();
         Task t=new Task(database);
-        t.setEvent(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));//((BitmapDrawable)buttonUploadImage.getDrawable()).getBitmap()));
-       // t.setTime(TimeButton.getText().toString());
-        //t.setDate(DateButton.getText().toString());
-        //t.setLocation(LocationButton.getText().toString());
-        //t.setDescription(editText.getText().toString());
-        //t.setPhone("");
-        //t.setImage(((BitmapDrawable)buttonUploadImage.getDrawable()).getBitmap());
+        t.setEvent(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        buttonUploadImage.setDrawingCacheEnabled(true);
+        buttonUploadImage.buildDrawingCache();
+        Bitmap bitmap = buttonUploadImage.getDrawingCache();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        StorageReference mref = mStorageRef.child(email+DateButton.getText().toString().replace("/","")+".jpg");
+        UploadTask uploadTask = mref.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Log.i("storage","SUCCESS");
+            }
+        });
+
         Intent intent = new Intent(NewEvent.this,profileEdit.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
