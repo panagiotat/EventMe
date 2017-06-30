@@ -8,10 +8,10 @@ package eventme.eventme;
  */
 
 public class Event {
-    private String email,date,time,location,description;
+    private String name,email,date,time,location,description;
     public Event()
     {}
-    public Event(String e,String d, String t, String l, String de) //Constructor
+    public Event(String e,String d, String t, String l, String de,String n) //Constructor
     {
 
         date=d;
@@ -19,6 +19,7 @@ public class Event {
         location=l;
         description=de;
         email=e;
+        name=n;
     }
 
     public String getemail()
@@ -41,5 +42,6 @@ public class Event {
     {
         return time;
     }
+    public String getName(){return name;}
 }
 

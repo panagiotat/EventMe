@@ -53,7 +53,7 @@ public class CustomList extends BaseAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        txtTitle.setText(events.get(position).getDescription());
+        txtTitle.setText(events.get(position).getName());
         Glide
                 .with(context)
                 .using(new FirebaseImageLoader())

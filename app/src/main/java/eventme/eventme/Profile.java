@@ -58,7 +58,7 @@ public class Profile extends AppCompatActivity {
         buttonUploadImage.setAdjustViewBounds(true);
         buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-
+        // EDW MPAINEI TO FIX ENABLED VISIBLE BUTTON LOGOUT KAI NEW EVENT
         email = (TextView) findViewById(R.id.email_user);
 
         email.setText(email2);

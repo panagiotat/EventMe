@@ -147,6 +147,7 @@ public class NewEvent extends AppCompatActivity {
                 DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
                 TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
                 LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
+                EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
                 SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
 
             }
@@ -201,7 +202,7 @@ public class NewEvent extends AppCompatActivity {
     public void Done(View v) // Click the button for share the event
     {
         database= FirebaseDatabase.getInstance().getReference();
-        database.child("Event").push().setValue(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));
+        database.child("Event").push().setValue(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString(),EventNameButton.getText().toString()));
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
         buttonUploadImage.setDrawingCacheEnabled(true);
