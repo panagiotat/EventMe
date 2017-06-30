@@ -67,7 +67,7 @@ public class showEvent extends AppCompatActivity {
     {
         StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
         StorageReference islandRef = mStorageRef.child(email+date.replace("/","")+".jpg");
-        islandRef.getDownloadUrl().getResult();
+
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(islandRef)
