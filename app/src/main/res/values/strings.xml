@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SkgNight</string>
+    <string name="app_name">EventME</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="profile_picture">Profile picture</string>

@@ -4,6 +4,7 @@ package eventme.eventme;
  */
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CustomList extends BaseAdapter {
 
     private final Activity context;
     ArrayList<Event> events;
-    public CustomList(Activity context, ArrayList<Event> events) {
+    ArrayList<Bitmap> images;
+    public CustomList(Activity context, ArrayList<Event> events, ArrayList<Bitmap> images) {
         this.context = context;
         this.events=events;
+        this.images=images;
 
 
     }
@@ -44,7 +48,7 @@ public class CustomList extends BaseAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
         txtTitle.setText(events.get(position).getDescription());
 
-        //imageView.setImageBitmap(imageId[position]);
+        imageView.setImageBitmap(images.get(position));
         return rowView;
     }
 }

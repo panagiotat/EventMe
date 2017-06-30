@@ -3,13 +3,12 @@ package eventme.eventme;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
-import android.os.Parcelable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,14 +21,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -37,9 +38,10 @@ public class Homepage extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private NavigationView navigationView;
+    private StorageReference mStorageRef;
     private ListView list;
     private ArrayList<Event> events=new ArrayList<>();
-
+    private ArrayList<Bitmap> bitmapArray=new ArrayList<>();
     private SharedPreferences preferences;
 
     @Override
@@ -49,7 +51,7 @@ public class Homepage extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String email = preferences.getString("email", "");
 
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         mDrawerLayout=(DrawerLayout) findViewById(R.id.drawerLayout);
         mToggle=new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -112,27 +114,11 @@ public class Homepage extends AppCompatActivity {
         ref.addChildEventListener(new ChildEventListener()  {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                events.clear();
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    Event e=ds.getValue(Event.class);
-                    events.add(e);
-
-                }
-                CustomList adapter = new CustomList(Homepage.this,events);
-                list.setAdapter(adapter);
+                retrieveData(dataSnapshot);
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                events.clear();
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    Event e=ds.getValue(Event.class);
-                    events.add(e);
-
-                }
-                CustomList adapter = new CustomList(Homepage.this,events);
-                list.setAdapter(adapter);
+                retrieveData(dataSnapshot);
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -159,6 +145,7 @@ public class Homepage extends AppCompatActivity {
                 intent.putExtra("Location", events.get(position).getLocation());
                 intent.putExtra("Description", events.get(position).getDescription());
                 intent.putExtra("Email", events.get(position).getemail());
+
                 startActivity(intent);
 
             }
@@ -192,6 +179,42 @@ public class Homepage extends AppCompatActivity {
         // Close The Database
 
 
+    }
+    private void retrieveData(DataSnapshot dataSnapshot)
+    {
+        events.clear();
+        bitmapArray.clear();
+        for (DataSnapshot ds : dataSnapshot.getChildren())
+        {
+            Event e=ds.getValue(Event.class);
+            events.add(e);
+
+        }
+        for(int i=0;i<events.size();i++)
+        {
+            StorageReference islandRef = mStorageRef.child(events.get(i).getemail()+events.get(i).getDate().replace("/","")+".jpg");
+
+            final long ONE_MEGABYTE = 4096 * 4096;
+            islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] data) {
+                    // Data for "images/island.jpg" is returns, use this as needed
+                    bitmapArray.add(BitmapFactory.decodeByteArray(data, 0, data.length));
+                    Log.i("TAGGGGGGGGGGGGGGGGGGG ", (String.valueOf(bitmapArray.size())));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Bitmap icon = BitmapFactory.decodeResource(getApplication().getResources(),
+                            R.drawable.fileupload);
+                    bitmapArray.add(icon);
+                    Log.i("TAGGG ", (String.valueOf(bitmapArray.size())));
+                }
+            });
+
+        }
+        CustomList adapter = new CustomList(Homepage.this,events,bitmapArray);
+        list.setAdapter(adapter);
     }
 
 }

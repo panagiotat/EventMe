@@ -91,10 +91,7 @@ public class NewEvent extends AppCompatActivity {
             }
             //Bitmap bitmap = getPath(data.getData());
             //buttonUploadImage.setImageBitmap(bitmap);
-
         }
-
-
     }
 
     private void selectImage() {
@@ -175,8 +172,8 @@ public class NewEvent extends AppCompatActivity {
     public void Done(View v) // Click the button for share the event
     {
         database= FirebaseDatabase.getInstance().getReference();
-        Task t=new Task(database);
-        t.setEvent(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));
+        database.child("Event").push().setValue(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString()));
+
         mStorageRef = FirebaseStorage.getInstance().getReference();
         buttonUploadImage.setDrawingCacheEnabled(true);
         buttonUploadImage.buildDrawingCache();

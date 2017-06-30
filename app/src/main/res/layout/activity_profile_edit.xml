@@ -19,33 +19,34 @@
         android:layout_weight="2.5"
         android:background="@android:color/transparent"
         android:onClick="changePhoto"
+        android:adjustViewBounds="true"
         android:src="@drawable/profile"
         tools:ignore="ContentDescription,NestedWeights" />
 
     <EditText
-        android:textColor="#000000"
         android:id="@+id/etonoma"
         android:layout_marginTop="20dp"
         android:textStyle="bold"
         android:textSize="16sp"
+        android:backgroundTint="#13183b"
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:hint="@string/name"
         />
 
-        <EditText
-            android:id="@+id/etemail"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="15dp"
-
-            android:layout_weight="1"
-            android:clickable="false"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:hint="@string/email"
-            android:textStyle="bold" />
+    <EditText
+        android:id="@+id/etemail"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#13183b"
+        android:layout_weight="1"
+        android:clickable="false"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:hint="@string/email"
+        android:textStyle="bold" />
 
 
     <EditText
@@ -55,6 +56,7 @@
         android:layout_marginTop="15dp"
         android:layout_weight="1"
         android:hint="@string/code"
+        android:backgroundTint="#13183b"
         android:inputType="textPassword"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -72,10 +74,10 @@
             android:layout_height="60dp"
             android:text="@string/save_changes"
             android:textAllCaps="false"
-
+            android:background="@drawable/shapebtn"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:backgroundTint="@android:color/black"
+            android:backgroundTint="#4e66de"
             tools:ignore="UnusedAttribute"
             android:onClick="saveChanges"/>
 
