@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 
-public class Homepage extends AppCompatActivity {
+public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private NavigationView navigationView;
@@ -53,6 +54,7 @@ public class Homepage extends AppCompatActivity {
     private ArrayList<Event> events=new ArrayList<>();
     private ArrayList<StorageReference> imageUrl=new ArrayList<>();
     private SharedPreferences preferences;
+    private SwipeRefreshLayout nswipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,9 @@ public class Homepage extends AppCompatActivity {
         {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             String email = preferences.getString("email", "");
+
+            nswipe = (SwipeRefreshLayout) findViewById(R.id.swiperefresh); //refresh while scrolling down
+            nswipe.setOnRefreshListener(this);
 
             mStorageRef = FirebaseStorage.getInstance().getReference();
             mDrawerLayout=(DrawerLayout) findViewById(R.id.drawerLayout);
@@ -106,21 +111,7 @@ public class Homepage extends AppCompatActivity {
                 navigationView.getMenu().findItem(R.id.nav_logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.nav_profile).setVisible(true);
             }
-                        //title θα μπει η arraylist με τα μαγαζια , imageId οι φωτο από τα μαγαζιά
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-            DatabaseReference ref = database.getReference().child("Event");
-
-            ref.addListenerForSingleValueEvent(new ValueEventListener()  {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    retrieveData(dataSnapshot);
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    throw databaseError.toException();
-                }
-            });
+            updateList();
 
             list=(ListView)findViewById(R.id.list);
 
@@ -205,6 +196,29 @@ public class Homepage extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override           //method for refresh
+    public void onRefresh() {
+        updateList();
+        nswipe.setRefreshing(false);
+    }
+
+    private void updateList(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference ref = database.getReference().child("Event");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener()  {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                retrieveData(dataSnapshot);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw databaseError.toException();
+            }
+        });
     }
 }
 
