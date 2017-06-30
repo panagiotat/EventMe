@@ -34,4 +34,6 @@
     <string name="loginregister">Login/Register</string>
     <string name="myprofile">My profile</string>
     <string name="title_activity_user_profile1">UserProfile1</string>
+    <string name="eventname">Event Name</string>
+
 </resources>
