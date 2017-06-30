@@ -41,7 +41,7 @@ public class NewEvent extends AppCompatActivity {
     private ImageView buttonUploadImage;
     private  static final int SELECT_PICTURE = 0 ;
 
-    private Button DateButton,TimeButton,SaveTimeButton,LocationButton,SaveButton;
+    private Button DateButton,TimeButton,SaveTimeButton,LocationButton,SaveButton,EventNameButton;
     private CalendarView calender;
     private DatabaseReference database;
     private TimePicker editTime;
@@ -69,6 +69,7 @@ public class NewEvent extends AppCompatActivity {
         TimeButton=(Button) findViewById(R.id.TimeButton);
         SaveButton=(Button) findViewById(R.id.SaveBtn);
         LocationButton=(Button) findViewById(R.id.LocationButton);
+        EventNameButton=(Button) findViewById(R.id.NameButton);
         calender=(CalendarView)  findViewById(R.id.calendarView);
         calender.setVisibility(View.INVISIBLE);
         SaveTimeButton=(Button) findViewById(R.id.SaveButtonTime);
@@ -104,6 +105,29 @@ public class NewEvent extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
 
+    public void ClickEventName(View v) // Click the button Event Name
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewEvent.this);
+        builder.setTitle("Event Name");
+        final EditText input = new EditText(NewEvent.this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EventNameButton.setText( input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
 
     public void ClickDate(View v) // Click the button Date
     {
@@ -111,6 +135,7 @@ public class NewEvent extends AppCompatActivity {
         TimeButton.setEnabled(false);TimeButton.setVisibility(View.INVISIBLE);
         SaveButton.setEnabled(false);SaveButton.setVisibility(View.INVISIBLE);
         LocationButton.setEnabled(false);LocationButton.setVisibility(View.INVISIBLE);
+        EventNameButton.setEnabled(false);EventNameButton.setVisibility(View.INVISIBLE);
         editTime.setVisibility(View.INVISIBLE);
         calender.setVisibility(View.VISIBLE);
         calender.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -130,7 +155,7 @@ public class NewEvent extends AppCompatActivity {
     public void ClickLocation(View v) // Click the button Location
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewEvent.this);
-        builder.setTitle("Τοποθεσία");
+        builder.setTitle("Location");
         final EditText input = new EditText(NewEvent.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
@@ -156,6 +181,7 @@ public class NewEvent extends AppCompatActivity {
         SaveButton.setEnabled(false);SaveButton.setVisibility(View.INVISIBLE);
         LocationButton.setEnabled(false);LocationButton.setVisibility(View.INVISIBLE);
         SaveTimeButton.setEnabled(true);SaveTimeButton.setVisibility(View.VISIBLE);
+        EventNameButton.setEnabled(false);EventNameButton.setVisibility(View.INVISIBLE);
         calender.setVisibility(View.INVISIBLE);
         editTime.setVisibility(View.VISIBLE);
     }
@@ -168,6 +194,7 @@ public class NewEvent extends AppCompatActivity {
             TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
             SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
             LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
+            EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
             SaveTimeButton.setEnabled(false);SaveTimeButton.setVisibility(View.INVISIBLE);
 
     }
