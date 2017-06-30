@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ public class Profile extends AppCompatActivity {
 
     private TextView name;
     private TextView email;
-    private String email2,username;
+    private String email2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +51,7 @@ public class Profile extends AppCompatActivity {
 
             }
         });
-
-
         email = (TextView) findViewById(R.id.email_user);
-
         email.setText(email2);
 
     }

@@ -103,7 +103,7 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
 
 
-        String email = _emailText.getText().toString();
+        final String email = _emailText.getText().toString();
 
         String password = _passwordText.getText().toString();
 
