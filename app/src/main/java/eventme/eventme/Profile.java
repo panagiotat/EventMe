@@ -21,16 +21,13 @@ public class Profile extends AppCompatActivity {
     private TextView email;
     private String email2;
 
-    private SharedPreferences preferences ;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        email2 = preferences.getString("email", "");
         name = (TextView) findViewById(R.id.onoma);
-        email = (TextView) findViewById(R.id.email_user);
+        Intent intent=getIntent();
+        email2 = intent.getStringExtra("email");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference ref = database.getReference().child("Users");
@@ -40,7 +37,6 @@ public class Profile extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     User a= ds.getValue(User.class);
-                    Log.i("TAGGG",a.getUsername());
                     if(a.getEmail().equals(email2.replace(".",",")))
                     {
                         name.setText(a.getUsername());
@@ -55,6 +51,7 @@ public class Profile extends AppCompatActivity {
 
             }
         });
+        email = (TextView) findViewById(R.id.email_user);
         email.setText(email2);
 
     }
