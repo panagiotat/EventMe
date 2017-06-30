@@ -6,7 +6,7 @@ package eventme.eventme;
 
 public class User {
     private String username,email,password;
-
+    public User(){}
     public User(String un,String e,String pass){
         username=un;
         email=e;

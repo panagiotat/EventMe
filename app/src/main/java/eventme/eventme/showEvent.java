@@ -20,6 +20,11 @@ import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -31,6 +36,7 @@ public class showEvent extends AppCompatActivity {
     private TextView description;
     private ImageView image;
     private String temp;
+    private TextView text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +59,9 @@ public class showEvent extends AppCompatActivity {
         description.setMovementMethod(new ScrollingMovementMethod());   //description scrolls down (shows 4lines)
 
 
-        TextView text = (TextView) findViewById(R.id.name);
+        text = (TextView) findViewById(R.id.name);
         temp =mIntent.getStringExtra("Email");
+        takeUserName(); //sets username in textview under image
 
         image = (ImageView) findViewById(R.id.imageView);
         image.setAdjustViewBounds(true);
@@ -62,7 +69,7 @@ public class showEvent extends AppCompatActivity {
 
 
         retrieveImage(temp,date.getText().toString());
-        text.setText(temp);
+
 
 
 
@@ -87,8 +94,33 @@ public class showEvent extends AppCompatActivity {
 
     public void goToShop(View v)
     {
-       // Intent intent = new Intent(showEvent.this, shop_profile.class);
-        //intent.putExtra("profile",temp);
-        //startActivity(intent);
+        Intent intent = new Intent(showEvent.this, Profile.class);
+        intent.putExtra("email",temp);
+        startActivity(intent);
     }
+
+    private void takeUserName(){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference ref = database.getReference().child("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User a= ds.getValue(User.class);
+                    if(a.getEmail().equals(temp.replace(".",",")))
+                    {
+                        text.setText(a.getUsername());
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
 }

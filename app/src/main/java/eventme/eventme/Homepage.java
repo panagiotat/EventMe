@@ -55,6 +55,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
     private ArrayList<StorageReference> imageUrl=new ArrayList<>();
     private SharedPreferences preferences;
     private SwipeRefreshLayout nswipe;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
         if(isOnline())
         {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String email = preferences.getString("email", "");
+            email = preferences.getString("email", "");
 
             nswipe = (SwipeRefreshLayout) findViewById(R.id.swiperefresh); //refresh while scrolling down
             nswipe.setOnRefreshListener(this);
@@ -100,6 +101,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                     else if(item.getItemId()==R.id.nav_profile)
                     {
                         Intent intent = new Intent(Homepage.this, Profile.class);
+                        intent.putExtra("email", email);
                         startActivity(intent);
                     }
                     return true;

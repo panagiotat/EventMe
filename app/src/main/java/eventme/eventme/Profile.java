@@ -20,21 +20,29 @@ public class Profile extends AppCompatActivity {
     private TextView email;
     private String email2,username;
 
-    private SharedPreferences preferences ;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        email2 = preferences.getString("email", "");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference returnUsr = ref.child("Users").child(email2.replace(".",",")).child("username");
-        returnUsr.addListenerForSingleValueEvent(new ValueEventListener() {
+        name = (TextView) findViewById(R.id.onoma);
+        Intent intent=getIntent();
+        email2 = intent.getStringExtra("email");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference ref = database.getReference().child("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                username = dataSnapshot.getValue(String.class);
-                //do what you want with the email
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User a= ds.getValue(User.class);
+                    if(a.getEmail().equals(email2.replace(".",",")))
+                    {
+                        name.setText(a.getUsername());
+
+                    }
+                }
+
             }
 
             @Override
@@ -44,10 +52,8 @@ public class Profile extends AppCompatActivity {
         });
 
 
-        name = (TextView) findViewById(R.id.onoma);
         email = (TextView) findViewById(R.id.email_user);
 
-        name.setText(username);
         email.setText(email2);
 
     }
