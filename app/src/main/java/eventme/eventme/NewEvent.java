@@ -88,6 +88,8 @@ public class NewEvent extends AppCompatActivity {
                 //Get ImageURi and load with help of picasso
 
                 Picasso.with(NewEvent.this).load(data.getData()).centerInside().fit().into(buttonUploadImage);
+                buttonUploadImage.setAdjustViewBounds(true);
+                buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             //Bitmap bitmap = getPath(data.getData());
             //buttonUploadImage.setImageBitmap(bitmap);
