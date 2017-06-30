@@ -124,6 +124,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
                     Intent intent = new Intent(Homepage.this, showEvent.class);
+                    intent.putExtra("Name", events.get(position).getName());
                     intent.putExtra("Date", events.get(position).getDate());
                     intent.putExtra("Time", events.get(position).getTime());
                     intent.putExtra("Location", events.get(position).getLocation());

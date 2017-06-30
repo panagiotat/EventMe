@@ -42,12 +42,13 @@ public class showEvent extends AppCompatActivity {
         location = (Button) findViewById(R.id.location);
 
         EventName = (Button) findViewById(R.id.ename);
-
+        EventName.setText(mIntent.getStringExtra("Name"));
         time.setText(mIntent.getStringExtra("Time"));
         date.setText(mIntent.getStringExtra("Date"));
         location.setText(mIntent.getStringExtra("Location"));
-        description.setText(mIntent.getStringExtra("Description"));
         description.setMovementMethod(new ScrollingMovementMethod());   //description scrolls down (shows 4lines)
+
+        description.setText(mIntent.getStringExtra("Description"));
 
 
         text = (TextView) findViewById(R.id.name);

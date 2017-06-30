@@ -22,6 +22,7 @@ public class Profile extends AppCompatActivity {
     private TextView email;
     private String email2;
     private ImageView buttonUploadImage ;
+    private boolean yourprofile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class Profile extends AppCompatActivity {
         name = (TextView) findViewById(R.id.onoma);
         Intent intent=getIntent();
         email2 = intent.getStringExtra("email");
+        yourprofile=intent.getBooleanExtra("yourprofile",true);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference ref = database.getReference().child("Users");
@@ -59,9 +61,27 @@ public class Profile extends AppCompatActivity {
         buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         // EDW MPAINEI TO FIX ENABLED VISIBLE BUTTON LOGOUT KAI NEW EVENT
+        if(yourprofile)
+        {
+            findViewById(R.id.grammoula).setVisibility(View.VISIBLE);
+            findViewById(R.id.logout).setVisibility(View.VISIBLE);
+            findViewById(R.id.add_event).setVisibility(View.VISIBLE);
+            findViewById(R.id.editProfilebtn).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            findViewById(R.id.grammoula).setVisibility(View.INVISIBLE);
+            findViewById(R.id.logout).setVisibility(View.INVISIBLE);
+            findViewById(R.id.add_event).setVisibility(View.INVISIBLE);
+            findViewById(R.id.editProfilebtn).setVisibility(View.INVISIBLE);
+        }
+
+
         email = (TextView) findViewById(R.id.email_user);
 
         email.setText(email2);
+
+
 
     }
 
