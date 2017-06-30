@@ -38,6 +38,8 @@ public class profileEdit extends AppCompatActivity {
             }
 
         });
+        buttonUploadImage.setAdjustViewBounds(true);
+        buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         Intent intent = getIntent();
 

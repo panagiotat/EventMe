@@ -51,6 +51,8 @@ public class CustomList extends BaseAdapter {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.title);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
+        imageView.setAdjustViewBounds(true);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         txtTitle.setText(events.get(position).getDescription());
         Glide
                 .with(context)
