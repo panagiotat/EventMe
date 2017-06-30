@@ -12,6 +12,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -19,8 +24,8 @@ public class CustomList extends BaseAdapter {
 
     private final Activity context;
     ArrayList<Event> events;
-    ArrayList<Bitmap> images;
-    public CustomList(Activity context, ArrayList<Event> events, ArrayList<Bitmap> images) {
+    ArrayList<StorageReference> images;
+    public CustomList(Activity context, ArrayList<Event> events, ArrayList<StorageReference> images) {
         this.context = context;
         this.events=events;
         this.images=images;
@@ -47,8 +52,12 @@ public class CustomList extends BaseAdapter {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
         txtTitle.setText(events.get(position).getDescription());
+        Glide
+                .with(context)
+                .using(new FirebaseImageLoader())
+                .load(images.get(position))
+                .into(imageView);
 
-        imageView.setImageBitmap(images.get(position));
         return rowView;
     }
 }

@@ -3,6 +3,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -13,6 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.security.acl.Owner;
 import java.util.ArrayList;
 
@@ -20,18 +27,22 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private FirebaseAuth mAuth;
+
 
     private EditText _email;
     private EditText _passwordText;
     private Button _loginButton;
     private TextView _signupLink;
-
+    private SharedPreferences preferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // create a instance of SQLite Database
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mAuth = FirebaseAuth.getInstance();
 
 
         _passwordText=(EditText) findViewById(R.id.input_password);
@@ -53,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         });
@@ -67,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
+
         _loginButton.setEnabled(false);
 
 
@@ -74,24 +87,37 @@ public class LoginActivity extends AppCompatActivity {
         String email = _email.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if(logUser (email,password)) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("email", _email.getText().toString());
-            editor.apply();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
 
+                            FirebaseUser user = mAuth.getCurrentUser();
 
+                            Toast.makeText(LoginActivity.this, "Login success.",
+                                    Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(LoginActivity.this,Profile.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("email", _email.getText().toString());
+                            editor.apply();
+                            Intent intent = new Intent(LoginActivity.this, Homepage.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
 
-        }
-        else
-        {
-            onLoginFailed();
-        }
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
 
+                            _loginButton.setEnabled(true);
+                        }
+
+                        // ...
+                    }
+                });
     }
 
     public void onLoginFailed() {
@@ -125,19 +151,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-public boolean logUser(String email,String password){
-    // fetch the Password form database for respective user name
-    String storedPassword="1234";
-    // check if the Stored password matches with  Password entered by user
-    if(password.equals(storedPassword))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

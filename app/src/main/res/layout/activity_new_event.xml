@@ -32,6 +32,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="100dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
             android:inputType="text"
             android:ems="10"
             android:id="@+id/editText"

@@ -6,6 +6,7 @@ package eventme.eventme;
         import android.content.SharedPreferences;
         import android.os.Bundle;
         import android.preference.PreferenceManager;
+        import android.support.annotation.NonNull;
         import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
         import android.view.View;
@@ -14,6 +15,12 @@ package eventme.eventme;
         import android.widget.EditText;
         import android.widget.TextView;
         import android.widget.Toast;
+
+        import com.google.android.gms.tasks.OnCompleteListener;
+        import com.google.android.gms.tasks.Task;
+        import com.google.firebase.auth.AuthResult;
+        import com.google.firebase.auth.FirebaseAuth;
+        import com.google.firebase.auth.FirebaseUser;
 
         import java.io.Serializable;
 
@@ -29,20 +36,24 @@ public class SignupActivity extends AppCompatActivity {
     private EditText _reEnterPasswordText;
     private  Button _signupButton;
     private TextView _loginLink;
+    private CheckBox _checkBox;
+    private SharedPreferences preferences;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         // get Instance  of Database Adapter
-
-
-         _nameText=(EditText) findViewById(R.id.name);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        _nameText=(EditText) findViewById(R.id.name);
         _emailText=(EditText) findViewById(R.id.email);
         _surnameText=(EditText) findViewById(R.id.surname);
          _passwordText=(EditText) findViewById(R.id.input_password);
          _reEnterPasswordText=(EditText) findViewById(R.id.input_reEnterPassword);
         _signupButton=(Button) findViewById(R.id.btn_signup);
+
         _loginLink=(TextView) findViewById(R.id.link_login);
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +72,16 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser()!= null){
+
+                }
+            }
+        };
+
 
     }
 
@@ -70,35 +91,56 @@ public class SignupActivity extends AppCompatActivity {
             onSignupFailed();
             return;
         }else {
+            _signupButton.setEnabled(false);
             onSignupSuccess();
 
 
 
         }
-
-        _signupButton.setEnabled(false);
-
-
-
-
     }
-
-
     public void onSignupSuccess() {
-        String name = _nameText.getText().toString();
+
 
         String email = _emailText.getText().toString();
-        String surname = _surnameText.getText().toString();
+
         String password = _passwordText.getText().toString();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("email",email);
-        editor.apply();
 
-            Intent intent = new Intent(SignupActivity.this, Homepage.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            Toast.makeText(SignupActivity.this, "Account created.",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString("email", _emailText.getText().toString());
+                            editor.apply();
+                            Intent intent = new Intent(SignupActivity.this, Homepage.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignupActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+
+
+
+
+
+
 
     }
 
@@ -150,7 +192,7 @@ public class SignupActivity extends AppCompatActivity {
             _passwordText.setError(null);
         }
 
-        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
+        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || !(reEnterPassword.equals(password))) {
             _reEnterPasswordText.setError("Password Do not match");
             valid = false;
         } else {
