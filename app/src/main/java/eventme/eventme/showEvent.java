@@ -1,22 +1,15 @@
 package eventme.eventme;
 import android.content.Intent;
-
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-
-
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +21,7 @@ import com.google.firebase.storage.StorageReference;
 
 
 public class showEvent extends AppCompatActivity {
-       private Button date,time,location;
+       private Button date,time,location,EventName;
     private TextView description;
     private ImageView image;
     private String temp;
@@ -47,6 +40,8 @@ public class showEvent extends AppCompatActivity {
         time = (Button) findViewById(R.id.hour);
 
         location = (Button) findViewById(R.id.location);
+
+        EventName = (Button) findViewById(R.id.ename);
 
         time.setText(mIntent.getStringExtra("Time"));
         date.setText(mIntent.getStringExtra("Date"));

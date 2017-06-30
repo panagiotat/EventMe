@@ -22,9 +22,6 @@
             android:layout_height="250dp"
             app:srcCompat="@drawable/fileupload"
             android:id="@+id/imageView"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
             android:background="@android:color/transparent"
             tools:ignore="ContentDescription"
             />
@@ -33,8 +30,6 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
-            android:layout_above="@+id/lin"
             android:onClick="goToShop"
             android:gravity="center"
             android:layout_marginBottom="8dp"
@@ -60,6 +55,20 @@
                 android:scrollbars = "vertical"
                 tools:ignore="ObsoleteLayoutParam" />
 
+            <Button
+                android:text="@string/eventname"
+                android:id="@+id/ename"
+                android:background="@drawable/shapebtn"
+                android:typeface="serif"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@android:color/background_light"
+                android:textStyle="normal|bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/editText2"
+                android:layout_alignParentStart="true"
+                tools:ignore="ObsoleteLayoutParam" />
 
             <Button
                 android:text="@string/date"
@@ -71,17 +80,13 @@
                 android:textStyle="normal|bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_below="@+id/editText2"
                 android:layout_alignParentStart="true"
                 tools:ignore="ObsoleteLayoutParam" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
-
             <Button
+                android:layout_marginTop="16dp"
                 android:text="@string/hour"
                 android:id="@+id/hour"
                 android:background="@drawable/shapebtn"
@@ -96,13 +101,9 @@
                 android:layout_centerHorizontal="true"
                 tools:ignore="ObsoleteLayoutParam" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView4" />
-
             <Button
                 android:text="@string/location"
+                android:layout_marginTop="16dp"
                 android:id="@+id/location"
                 android:background="@drawable/shapebtn"
                 android:typeface="serif"
