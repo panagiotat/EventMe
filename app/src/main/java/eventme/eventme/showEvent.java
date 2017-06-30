@@ -92,6 +92,7 @@ public class showEvent extends AppCompatActivity {
     {
         Intent intent = new Intent(showEvent.this, Profile.class);
         intent.putExtra("email",temp);
+        intent.putExtra("yourprofile",false);
         startActivity(intent);
     }
 

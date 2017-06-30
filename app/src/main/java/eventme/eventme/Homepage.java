@@ -102,6 +102,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                     {
                         Intent intent = new Intent(Homepage.this, Profile.class);
                         intent.putExtra("email", email);
+                        intent.putExtra("yourprofile",true);
                         startActivity(intent);
                     }
                     return true;
