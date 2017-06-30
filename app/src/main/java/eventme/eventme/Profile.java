@@ -29,7 +29,7 @@ public class Profile extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email2 = preferences.getString("email", "");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference returnUsr = ref.child("Users").child(email2).child("username");
+        DatabaseReference returnUsr = ref.child("Users").child(email2.replace(".",",")).child("username");
         returnUsr.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class showEvent extends AppCompatActivity {
     private TextView description;
     private ImageView image;
     private String temp;
+    private Animation zoomin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +55,19 @@ public class showEvent extends AppCompatActivity {
         temp =mIntent.getStringExtra("Email");
 
         image = (ImageView) findViewById(R.id.imageView);
+        zoomin = AnimationUtils.loadAnimation(this, R.anim.zoomin);
+        image.setAnimation(zoomin);
+        image.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+
+                    v.startAnimation(zoomin);
+
+            }
+        });
         retrieveImage(temp,date.getText().toString());
         text.setText(temp);
+
+
 
     }
     @Override

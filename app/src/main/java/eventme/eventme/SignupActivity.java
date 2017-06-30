@@ -124,7 +124,7 @@ public class SignupActivity extends AppCompatActivity {
                             editor.apply();
 
                             database= FirebaseDatabase.getInstance().getReference();
-                            database.child("Users").push().setValue(new User(_nameText.getText().toString(),_emailText.getText().toString(),_passwordText.getText().toString()));
+                            database.child("Users").push().setValue(new User(_nameText.getText().toString(),_emailText.getText().toString().replace(".",","),_passwordText.getText().toString()));
 
                             Intent intent = new Intent(SignupActivity.this, Homepage.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -184,8 +184,8 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4) {
+            _passwordText.setError("Password is small");
             valid = false;
         } else {
             _passwordText.setError(null);

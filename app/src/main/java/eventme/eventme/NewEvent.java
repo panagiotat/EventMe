@@ -195,10 +195,8 @@ public class NewEvent extends AppCompatActivity {
                 Log.i("storage","SUCCESS");
             }
         });
+        this.finish();
 
-        Intent intent = new Intent(NewEvent.this,profileEdit.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
     }
     @Override
     protected void onDestroy() {

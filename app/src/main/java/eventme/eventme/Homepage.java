@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -108,22 +109,12 @@ public class Homepage extends AppCompatActivity {
                         //title θα μπει η arraylist με τα μαγαζια , imageId οι φωτο από τα μαγαζιά
             FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-            DatabaseReference ref = database.getReference();
+            DatabaseReference ref = database.getReference().child("Event");
 
-            ref.addChildEventListener(new ChildEventListener()  {
+            ref.addListenerForSingleValueEvent(new ValueEventListener()  {
                 @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                public void onDataChange(DataSnapshot dataSnapshot) {
                     retrieveData(dataSnapshot);
-                }
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    retrieveData(dataSnapshot);
-                }
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                }
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -164,15 +155,6 @@ public class Homepage extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-
-            if(resultCode == 1){
-                events.add((Event)data.getSerializableExtra("event"));
-            }
-        }
-    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -184,18 +166,16 @@ public class Homepage extends AppCompatActivity {
     {
         events.clear();
         imageUrl.clear();
+
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
             Event e=ds.getValue(Event.class);
             events.add(e);
-
         }
-
         for(int i=0;i<events.size();i++)
         {
 
             imageUrl.add(mStorageRef.child(events.get(i).getemail()+events.get(i).getDate().replace("/","")+".jpg"));
-
 
         }
         CustomList adapter = new CustomList(Homepage.this,events,imageUrl);
