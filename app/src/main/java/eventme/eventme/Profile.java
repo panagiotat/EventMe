@@ -8,11 +8,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class Profile extends AppCompatActivity {
 
     private TextView name;
     private TextView email;
-    private String email2;
+    private String email2,username;
 
     private SharedPreferences preferences ;
 
@@ -20,15 +26,28 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email2 = preferences.getString("email", "");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference returnUsr = ref.child("Users").child(email2).child("username");
+        returnUsr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                username = dataSnapshot.getValue(String.class);
+                //do what you want with the email
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         name = (TextView) findViewById(R.id.onoma);
         email = (TextView) findViewById(R.id.email_user);
 
-        name.setText("sdgsdgs");
+        name.setText(username);
         email.setText(email2);
 
     }
