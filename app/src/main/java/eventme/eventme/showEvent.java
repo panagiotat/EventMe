@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -65,23 +67,11 @@ public class showEvent extends AppCompatActivity {
     {
         StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
         StorageReference islandRef = mStorageRef.child(email+date.replace("/","")+".jpg");
-
-        final long ONE_MEGABYTE = 4096 * 4096;
-        islandRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] data) {
-                // Data for "images/island.jpg" is returns, use this as needed
-                image.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Bitmap icon = BitmapFactory.decodeResource(getApplication().getResources(),
-                        R.drawable.fileupload);
-                image.setImageBitmap(icon);
-
-            }
-        });
+        islandRef.getDownloadUrl().getResult();
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(islandRef)
+                .into(image);
 
     }
 
