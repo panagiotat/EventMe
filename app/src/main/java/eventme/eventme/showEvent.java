@@ -3,6 +3,7 @@ import android.content.Intent;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -45,11 +46,15 @@ public class showEvent extends AppCompatActivity {
         date.setText(mIntent.getStringExtra("Date"));
         location.setText(mIntent.getStringExtra("Location"));
         description.setText(mIntent.getStringExtra("Description"));
+        description.setMovementMethod(new ScrollingMovementMethod());   //description scrolls down (shows 4lines)
+
 
         TextView text = (TextView) findViewById(R.id.name);
         temp =mIntent.getStringExtra("Email");
 
         image = (ImageView) findViewById(R.id.imageView);
+        image.setAdjustViewBounds(true);
+        image.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 
         retrieveImage(temp,date.getText().toString());
