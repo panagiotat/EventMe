@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 public class profileEdit extends AppCompatActivity {
@@ -75,8 +78,20 @@ public class profileEdit extends AppCompatActivity {
     public void saveChanges(View view)
     {
         String newname = et_name.getText().toString();
-        String newphone = et_pass.getText().toString();
+        DatabaseReference change1= FirebaseDatabase.getInstance().getReference().child("Users").child("username");
+        change1.setValue(newname);
+
+
         String newemail = et_email.getText().toString();
+
+        DatabaseReference change2= FirebaseDatabase.getInstance().getReference().child("Users").child("email");
+        change2.setValue(newemail);
+
+        String newpass= et_pass.getText().toString();
+
+        DatabaseReference change3= FirebaseDatabase.getInstance().getReference().child("Users").child("password");
+        change3.setValue(newpass);
+
     }
 
     public void logout(View v)

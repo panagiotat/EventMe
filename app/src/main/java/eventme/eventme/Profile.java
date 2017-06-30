@@ -72,6 +72,14 @@ public class Profile extends AppCompatActivity {
 
         startActivity(intent);
     }
+    public void logOut(View view)
+    {
+
+        Intent intent = new Intent(this,Homepage.class);
+        intent.putExtra("email","");
+        startActivity(intent);
+
+    }
 
 
 }

@@ -20,7 +20,7 @@
             android:layout_height="41dp"
             android:layout_weight="1"
             android:background="#4e66de"
-            android:onClick="logout"
+            android:onClick="logOut"
             android:text="@string/exit"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
