@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ public class Profile extends AppCompatActivity {
 
     private TextView name;
     private TextView email;
-    private String email2,username;
+    private String email2;
 
     private SharedPreferences preferences ;
 
@@ -28,13 +29,25 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         email2 = preferences.getString("email", "");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference returnUsr = ref.child("Users").child(email2.replace(".",",")).child("username");
-        returnUsr.addListenerForSingleValueEvent(new ValueEventListener() {
+        name = (TextView) findViewById(R.id.onoma);
+        email = (TextView) findViewById(R.id.email_user);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference ref = database.getReference().child("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                username = dataSnapshot.getValue(String.class);
-                //do what you want with the email
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User a= ds.getValue(User.class);
+                    Log.i("TAGGG",a.getUsername());
+                    if(a.getEmail().equals(email2.replace(".",",")))
+                    {
+                        name.setText(a.getUsername());
+
+                    }
+                }
+
             }
 
             @Override
@@ -42,12 +55,6 @@ public class Profile extends AppCompatActivity {
 
             }
         });
-
-
-        name = (TextView) findViewById(R.id.onoma);
-        email = (TextView) findViewById(R.id.email_user);
-
-        name.setText(username);
         email.setText(email2);
 
     }

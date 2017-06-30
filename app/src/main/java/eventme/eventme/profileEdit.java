@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -91,11 +92,12 @@ public class profileEdit extends AppCompatActivity {
 
         DatabaseReference change3= FirebaseDatabase.getInstance().getReference().child("Users").child("password");
         change3.setValue(newpass);
+        Toast.makeText(profileEdit.this, "Done!",
+                Toast.LENGTH_SHORT).show();
+        this.finish();
 
     }
 
-    public void logout(View v)
-    {
-    }
+
 
 }
