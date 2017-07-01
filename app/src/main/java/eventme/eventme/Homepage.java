@@ -154,6 +154,8 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
         {
             Event e=ds.getValue(Event.class);
             events.add(e);
+
+
         }
 
         events = sortListView(events);
@@ -162,7 +164,6 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
         {
 
             imageUrl.add(mStorageRef.child(events.get(i).getemail()+events.get(i).getDate().replace("/","")+".jpg"));
-
         }
         CustomList adapter = new CustomList(Homepage.this,events,imageUrl);
         list.setAdapter(adapter);

@@ -14,11 +14,14 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
@@ -31,7 +34,7 @@ public class Profile extends AppCompatActivity {
 
     private TextView name;
     private TextView email;
-    private String email2;
+    private String email2,username;
     private ImageView buttonUploadImage ;
     private boolean yourprofile;
     private ListView list;
@@ -43,6 +46,7 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
 
@@ -91,7 +95,8 @@ public class Profile extends AppCompatActivity {
                     User a= ds.getValue(User.class);
                     if(a.getEmail().equals(email2.replace(".",",")))
                     {
-                        name.setText(a.getUsername());
+                        username = a.getUsername();
+                        name.setText("Username: " + a.getUsername());
 
                     }
                 }
@@ -107,6 +112,7 @@ public class Profile extends AppCompatActivity {
         buttonUploadImage = (ImageView) findViewById(R.id.photo_magaziou);
         buttonUploadImage.setAdjustViewBounds(true);
         buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        retrieveImage(email2);
 
         if(yourprofile)
         {
@@ -126,7 +132,7 @@ public class Profile extends AppCompatActivity {
 
         email = (TextView) findViewById(R.id.email_user);
 
-        email.setText(email2);
+        email.setText( "Email: " + email2);
 
 
 
@@ -140,16 +146,10 @@ public class Profile extends AppCompatActivity {
 
     public void editProfile(View view)
     {
-        String current_name;
-        String current_email;
-
-        current_name = name.getText().toString();
-        current_email = email.getText().toString();
-
         Intent intent = new Intent(Profile.this, profileEdit.class);
 
-        intent.putExtra("stringname",current_name);
-        intent.putExtra("stringemail",current_email);
+        intent.putExtra("stringname",username);
+        intent.putExtra("stringemail",email2);
 
         startActivity(intent);
     }
@@ -170,7 +170,10 @@ public class Profile extends AppCompatActivity {
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
             Event e=ds.getValue(Event.class);
-            events.add(e);
+            if(e.getemail().equals(email2))
+            {
+                events.add(e);
+            }
         }
 
         events = sortListView(events);
@@ -265,6 +268,17 @@ public class Profile extends AppCompatActivity {
         });
 
         return list ;
+
+    }
+    private void retrieveImage(String email)
+    {
+        StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
+        StorageReference islandRef = mStorageRef.child(email+".jpg");
+
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(islandRef)
+                .into(buttonUploadImage);
 
     }
 
