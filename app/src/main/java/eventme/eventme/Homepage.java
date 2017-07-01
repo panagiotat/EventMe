@@ -3,37 +3,22 @@ package eventme.eventme;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
-import android.support.annotation.NonNull;
-
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.ActionCodeResult;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +28,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.StringTokenizer;
 
 
 public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -167,6 +155,9 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
             Event e=ds.getValue(Event.class);
             events.add(e);
         }
+
+        events = sortListView(events);
+
         for(int i=0;i<events.size();i++)
         {
 
@@ -224,5 +215,74 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
             }
         });
     }
+
+    private ArrayList<Event> sortListView(ArrayList<Event> list)
+    {
+        Collections.sort(list, new Comparator<Event>()
+        {
+            @Override
+            public int compare(Event e1, Event e2)
+            {
+                String date1 = e1.getDate();
+                String date2 = e2.getDate();
+                String e1imera = null , e1minas = null , e1xronia = null , e2imera = null , e2minas = null , e2xronia = null ;
+
+                String currentdate1 , currentdate2 ;
+
+                int temp1 = 0 ;
+                StringTokenizer tokenizer = new StringTokenizer(date1, "/");
+                while(tokenizer.hasMoreTokens())
+                {
+                    if(temp1 == 0)
+                    {
+                        e1imera = tokenizer.nextToken();
+                        temp1 ++ ;
+                    }
+                    if(temp1 == 1)
+                    {
+                        e1minas = tokenizer.nextToken();
+                        temp1++ ;
+                    }
+                    else
+                    {
+                        e1xronia = tokenizer.nextToken();
+                    }
+                }
+
+                currentdate1 = e1xronia+e1minas+e1imera ;
+
+                int temp2 = 0 ;
+                StringTokenizer tokenizer2 = new StringTokenizer(date2, "/");
+                while(tokenizer2.hasMoreTokens())
+                {
+                    if(temp2 == 0)
+                    {
+                        e2imera = tokenizer2.nextToken();
+                        temp2 ++ ;
+                    }
+                    if(temp2 == 1)
+                    {
+                        e2minas = tokenizer2.nextToken();
+                        temp2++ ;
+                    }
+                    else
+                    {
+                        e2xronia = tokenizer2.nextToken();
+                    }
+                }
+
+                currentdate2 = e2xronia+e2minas+e2imera ;
+
+                return  currentdate1.compareTo(currentdate2);
+
+            }
+
+        });
+
+        return list ;
+
+    }
+
+
 }
 

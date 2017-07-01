@@ -21,7 +21,8 @@ import com.google.firebase.storage.StorageReference;
 
 
 public class showEvent extends AppCompatActivity {
-       private Button date,time,location,EventName;
+
+    private Button date,time,location,EventName;
     private TextView description;
     private ImageView image;
     private String temp;
