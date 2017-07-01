@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="checkEventsName">Event Name</string>
+    <string name="checkDate">Date</string>
+    <string name="checkhour">Hour</string>
+    <string name="checkLocation">Location</string>
     <string name="app_name">EventME</string>
     <string name="open">Open</string>
     <string name="close">Close</string>

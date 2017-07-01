@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="checkEventsName">Όνομα Εκδήλωσης</string>
+    <string name="checkDate">Ημερομηνία</string>
+    <string name="checkhour">Ώρα</string>
+    <string name="checkLocation">Τοποθεσία</string>
     <string name="app_name">EventME</string>
     <string name="open">Είσοδος</string>
     <string name="close">Έξοδος</string>

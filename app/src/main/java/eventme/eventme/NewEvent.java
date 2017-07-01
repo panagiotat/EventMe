@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -158,30 +159,47 @@ public class NewEvent extends AppCompatActivity {
     public void Done(View v) // Click the button for share the event
     {
         database= FirebaseDatabase.getInstance().getReference();
-        database.child("Event").push().setValue(new Event(email,DateButton.getText().toString(),TimeButton.getText().toString(),LocationButton.getText().toString(),editText.getText().toString(),EventNameButton.getText().toString()));
+        String datebutton=DateButton.getText().toString();
+        String timebutton = TimeButton.getText().toString();
+        String locationbutton = LocationButton.getText().toString();
+        String eventname=EventNameButton.getText().toString();
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        buttonUploadImage.setDrawingCacheEnabled(true);
-        buttonUploadImage.buildDrawingCache();
-        Bitmap bitmap = buttonUploadImage.getDrawingCache();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        StorageReference mref = mStorageRef.child(email+DateButton.getText().toString().replace("/","")+".jpg");
-        UploadTask uploadTask = mref.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Log.i("storage","SUCCESS");
-            }
-        });
-        this.finish();
+        if(datebutton.equals(getResources().getString(R.string.checkDate))
+                || timebutton.equals(getResources().getString(R.string.checkhour))
+                ||locationbutton.equals(getResources().getString(R.string.checkLocation))
+                ||locationbutton.equals("")||eventname.equals(getResources().getString(R.string.checkEventsName))
+                ||eventname.equals("") )
+        {
+            Toast.makeText(getBaseContext(),"Complete all the fields", Toast.LENGTH_LONG).show();
+
+        }
+        else {
+
+
+            database.child("Event").push().setValue(new Event(email, DateButton.getText().toString(), TimeButton.getText().toString(), LocationButton.getText().toString(), editText.getText().toString(), EventNameButton.getText().toString()));
+            mStorageRef = FirebaseStorage.getInstance().getReference();
+            buttonUploadImage.setDrawingCacheEnabled(true);
+            buttonUploadImage.buildDrawingCache();
+            Bitmap bitmap = buttonUploadImage.getDrawingCache();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+            StorageReference mref = mStorageRef.child(email + DateButton.getText().toString().replace("/", "") + ".jpg");
+            UploadTask uploadTask = mref.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Log.i("storage", "SUCCESS");
+                }
+            });
+            this.finish();
+        }
 
     }
     @Override
