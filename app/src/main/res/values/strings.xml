@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="completeallfields">Complete all fields</string>
+    <string name="loginfailed">Login failed</string>
+    <string name="atleastcharacters">At least three characters</string>
+    <string name="entervalidmail">enter a valid email address</string>
+    <string name="passwordissmall">password is small</string>
+    <string name="passworddonotmatch">password do not small</string>
+    <string name="accountCreated">Accound Created</string>
     <string name="checkEventsName">Event Name</string>
     <string name="checkDate">Date</string>
     <string name="checkhour">Hour</string>

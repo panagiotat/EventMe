@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="accountCreated">Ο λογαριασμός δημιουργήθηκε</string>
+    <string name="loginfailed">Είσοδος απέτυχε</string>
+    <string name="completeallfields">Συμπληρώστε όλα τα πεδία</string>
+    <string name="atleastcharacters">Το λιγότερο τρείς χαρακτήρες</string>
+    <string name="entervalidmail">Βάλτε ένα έγκυρο email</string>
+    <string name="passwordissmall">ο κωδικός είναι μικρός</string>
+    <string name="passworddonotmatch">ο κωδικός δεν ταιριάζει</string>
     <string name="checkEventsName">Όνομα Εκδήλωσης</string>
     <string name="checkDate">Ημερομηνία</string>
     <string name="checkhour">Ώρα</string>
