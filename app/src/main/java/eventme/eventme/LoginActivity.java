@@ -19,6 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.security.acl.Owner;
 import java.util.ArrayList;
@@ -27,9 +32,7 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
-    private FirebaseAuth mAuth;
-
-
+    private boolean flag;
     private EditText _email;
     private EditText _passwordText;
     private Button _loginButton;
@@ -42,9 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mAuth = FirebaseAuth.getInstance();
-
-
         _passwordText=(EditText) findViewById(R.id.input_password);
         _email= (EditText) findViewById(R.id.email);
         _loginButton=(Button) findViewById(R.id.btn_login);
@@ -77,44 +77,42 @@ public class LoginActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         }
-
-
-
         _loginButton.setEnabled(false);
 
+        final String email = _email.getText().toString();
+        final String password = _passwordText.getText().toString();
+        flag=true;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-
-        String email = _email.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LoginActivity.this, "Login success.",
-                                    Toast.LENGTH_SHORT).show();
-
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("email", _email.getText().toString());
-                            editor.apply();
-                            Intent intent = new Intent(LoginActivity.this, Homepage.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                            _loginButton.setEnabled(true);
-                        }
-
+        DatabaseReference ref = database.getReference().child("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User a= ds.getValue(User.class);
+                    if(a.getEmail().equals(email.replace(".",",")) && a.getPassword().equals(password))
+                    {
+                        flag=false;
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("email", _email.getText().toString());
+                        editor.apply();
+                        Intent intent = new Intent(LoginActivity.this, Homepage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
 
                     }
-                });
+                }
+                if(flag)
+                    Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+
+            }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
     }
 
     public void onLoginFailed() {

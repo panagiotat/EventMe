@@ -29,8 +29,6 @@ import java.io.Serializable;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
-
-
     private EditText _nameText;
     private EditText _emailText;
     private DatabaseReference database;
@@ -40,8 +38,6 @@ public class SignupActivity extends AppCompatActivity {
     private TextView _loginLink;
 
     private SharedPreferences preferences;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,25 +61,12 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-
-
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signup();
             }
         });
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser()!= null){
-
-                }
-            }
-        };
-
 
     }
 
@@ -100,53 +83,18 @@ public class SignupActivity extends AppCompatActivity {
 
         }
     }
-    public void onSignupSuccess() {
-
-
-        final String email = _emailText.getText().toString();
-
-        String password = _passwordText.getText().toString();
-
-
-
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            Toast.makeText(SignupActivity.this, "Account created.",
-                                    Toast.LENGTH_SHORT).show();
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("email", _emailText.getText().toString());
-                            editor.apply();
-
-                            database= FirebaseDatabase.getInstance().getReference();
-                            database.child("Users").child(_emailText.getText().toString().replace(".",",")).setValue(new User(_nameText.getText().toString(),_emailText.getText().toString().replace(".",","),_passwordText.getText().toString()));
-
-                            Intent intent = new Intent(SignupActivity.this, Homepage.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignupActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-
-
-
-
-
-
-
-
+    public void onSignupSuccess()
+    {
+        Toast.makeText(SignupActivity.this, "Account created.",
+                Toast.LENGTH_SHORT).show();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("email", _emailText.getText().toString());
+        editor.apply();
+        database= FirebaseDatabase.getInstance().getReference();
+        database.child("Users").child(_emailText.getText().toString().replace(".",",")).setValue(new User(_nameText.getText().toString(),_emailText.getText().toString().replace(".",","),_passwordText.getText().toString()));
+        Intent intent = new Intent(SignupActivity.this, Homepage.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     public void onSignupFailed() {

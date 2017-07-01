@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -117,7 +117,7 @@ public class profileEdit extends AppCompatActivity {
                 Log.i("storage","SUCCESS");
             }
         });
-        this.finish();
+
         Toast.makeText(profileEdit.this, "Done!",
                 Toast.LENGTH_SHORT).show();
         this.finish();
