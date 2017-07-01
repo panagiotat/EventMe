@@ -42,7 +42,7 @@
 
             <ImageButton
                 android:layout_width="match_parent"
-                app:srcCompat="@drawable/fileupload"
+                app:srcCompat="@drawable/event_null"
                 android:id="@+id/UploadButton"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
