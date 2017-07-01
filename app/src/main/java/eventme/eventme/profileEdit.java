@@ -81,19 +81,11 @@ public class profileEdit extends AppCompatActivity {
     public void saveChanges(View view)
     {
         String newname = et_name.getText().toString();
-        DatabaseReference change1= FirebaseDatabase.getInstance().getReference().child("Users").child("username");
-        change1.setValue(newname);
-
-
         String newemail = et_email.getText().toString();
-
-        DatabaseReference change2= FirebaseDatabase.getInstance().getReference().child("Users").child("email");
-        change2.setValue(newemail);
-
+        FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".",",")).child("username").setValue(newname);
         String newpass= et_pass.getText().toString();
+        FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".",",")).child("password").setValue(newpass);
 
-        DatabaseReference change3= FirebaseDatabase.getInstance().getReference().child("Users").child("password");
-        change3.setValue(newpass);
         Toast.makeText(profileEdit.this, "Done!",
                 Toast.LENGTH_SHORT).show();
         this.finish();

@@ -4,7 +4,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="profile_picture">Profile picture</string>
-    <string name="name">Name</string>
+    <string name="name">Username</string>
     <string name="email">Ε-mail</string>
     <string name="changepic">Change Picture</string>
     <string name="code">Password</string>

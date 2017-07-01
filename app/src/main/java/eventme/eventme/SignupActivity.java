@@ -124,7 +124,7 @@ public class SignupActivity extends AppCompatActivity {
                             editor.apply();
 
                             database= FirebaseDatabase.getInstance().getReference();
-                            database.child("Users").push().setValue(new User(_nameText.getText().toString(),_emailText.getText().toString().replace(".",","),_passwordText.getText().toString()));
+                            database.child("Users").child(_emailText.getText().toString().replace(".",",")).setValue(new User(_nameText.getText().toString(),_emailText.getText().toString().replace(".",","),_passwordText.getText().toString()));
 
                             Intent intent = new Intent(SignupActivity.this, Homepage.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
