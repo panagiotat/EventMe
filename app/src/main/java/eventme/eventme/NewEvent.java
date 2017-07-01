@@ -1,5 +1,6 @@
 package eventme.eventme;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,11 +18,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,10 +44,8 @@ public class NewEvent extends AppCompatActivity {
     private ImageView buttonUploadImage;
     private  static final int SELECT_PICTURE = 0 ;
 
-    private Button DateButton,TimeButton,SaveTimeButton,LocationButton,SaveButton,EventNameButton;
-    private CalendarView calender;
+    private Button DateButton,TimeButton,LocationButton,SaveButton,EventNameButton;
     private DatabaseReference database;
-    private TimePicker editTime;
     private EditText editText;
     private SharedPreferences preferences;
     String email;
@@ -64,18 +65,13 @@ public class NewEvent extends AppCompatActivity {
             }
 
         });
+        //buttonUploadImage.setAdjustViewBounds(true);
 
         DateButton=(Button) findViewById(R.id.DateButton);
         TimeButton=(Button) findViewById(R.id.TimeButton);
         SaveButton=(Button) findViewById(R.id.SaveBtn);
         LocationButton=(Button) findViewById(R.id.LocationButton);
         EventNameButton=(Button) findViewById(R.id.NameButton);
-        calender=(CalendarView)  findViewById(R.id.calendarView);
-        calender.setVisibility(View.INVISIBLE);
-        SaveTimeButton=(Button) findViewById(R.id.SaveButtonTime);
-        SaveTimeButton.setVisibility(View.INVISIBLE);
-        editTime=(TimePicker)findViewById(R.id.timePicker);
-        editTime.setVisibility(View.INVISIBLE);
         editText=(EditText) findViewById(R.id.editText);
 
     }
@@ -131,27 +127,7 @@ public class NewEvent extends AppCompatActivity {
 
     public void ClickDate(View v) // Click the button Date
     {
-        DateButton.setEnabled(false);DateButton.setVisibility(View.INVISIBLE);
-        TimeButton.setEnabled(false);TimeButton.setVisibility(View.INVISIBLE);
-        SaveButton.setEnabled(false);SaveButton.setVisibility(View.INVISIBLE);
-        LocationButton.setEnabled(false);LocationButton.setVisibility(View.INVISIBLE);
-        EventNameButton.setEnabled(false);EventNameButton.setVisibility(View.INVISIBLE);
-        editTime.setVisibility(View.INVISIBLE);
-        calender.setVisibility(View.VISIBLE);
-        calender.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-
-                DateButton.setText(dayOfMonth +" / " + (month+1) + " / " + year);
-                calender.setVisibility(View.INVISIBLE);
-                DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
-                TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
-                LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
-                EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
-                SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
-
-            }
-        });
+        calendarDialog();
     }
     public void ClickLocation(View v) // Click the button Location
     {
@@ -181,23 +157,8 @@ public class NewEvent extends AppCompatActivity {
         TimeButton.setEnabled(false);TimeButton.setVisibility(View.INVISIBLE);
         SaveButton.setEnabled(false);SaveButton.setVisibility(View.INVISIBLE);
         LocationButton.setEnabled(false);LocationButton.setVisibility(View.INVISIBLE);
-        SaveTimeButton.setEnabled(true);SaveTimeButton.setVisibility(View.VISIBLE);
         EventNameButton.setEnabled(false);EventNameButton.setVisibility(View.INVISIBLE);
-        calender.setVisibility(View.INVISIBLE);
-        editTime.setVisibility(View.VISIBLE);
-    }
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void ClickSave(View v) // Click the button save
-    {
-            editTime.setVisibility(View.INVISIBLE);
-            TimeButton.setText(editTime.getHour()+":"+editTime.getMinute());
-            DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
-            TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
-            SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
-            LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
-            EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
-            SaveTimeButton.setEnabled(false);SaveTimeButton.setVisibility(View.INVISIBLE);
-
+        timerDialog();
     }
     public void Done(View v) // Click the button for share the event
     {
@@ -234,4 +195,61 @@ public class NewEvent extends AppCompatActivity {
         // Close The Database
 
     }
+
+    private void calendarDialog(){
+        LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout ll= (LinearLayout)inflater.inflate(R.layout.calendar, null, false);
+        CalendarView cv = (CalendarView) ll.getChildAt(0);
+        cv.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                DateButton.setText(dayOfMonth +" / " + (month+1) + " / " + year);
+            }
+        });
+        new AlertDialog.Builder(NewEvent.this)
+                .setTitle("Event Calendar")
+                .setMessage("Click to schedule or view events.")
+                .setView(ll)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
+                        TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
+                        LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
+                        EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
+                        SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DateButton.setText("");
+                    }
+                }
+        ).show();
+    }
+    private void timerDialog(){
+        LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout ll= (LinearLayout)inflater.inflate(R.layout.time_picker, null, false);
+        TimePicker cv=(TimePicker) ll.getChildAt(0);
+        new AlertDialog.Builder(NewEvent.this)
+                .setTitle("Event Calendar")
+                .setMessage("Click to schedule or view events.")
+                .setView(ll)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
+                        TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
+                        SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
+                        LocationButton.setEnabled(true);LocationButton.setVisibility(View.VISIBLE);
+                        EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DateButton.setText("");
+                    }
+                }
+        ).show();
+    }
+
 }
