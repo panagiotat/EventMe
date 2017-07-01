@@ -153,11 +153,6 @@ public class NewEvent extends AppCompatActivity {
     }
     public void ClickTime(View v) // Click the button Time
     {
-        DateButton.setEnabled(false);DateButton.setVisibility(View.INVISIBLE);
-        TimeButton.setEnabled(false);TimeButton.setVisibility(View.INVISIBLE);
-        SaveButton.setEnabled(false);SaveButton.setVisibility(View.INVISIBLE);
-        LocationButton.setEnabled(false);LocationButton.setVisibility(View.INVISIBLE);
-        EventNameButton.setEnabled(false);EventNameButton.setVisibility(View.INVISIBLE);
         timerDialog();
     }
     public void Done(View v) // Click the button for share the event
@@ -221,9 +216,7 @@ public class NewEvent extends AppCompatActivity {
                         EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
                         SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);                    }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        DateButton.setText("");
-                    }
+                    public void onClick(DialogInterface dialog, int whichButton) {}
                 }
         ).show();
     }
@@ -231,13 +224,14 @@ public class NewEvent extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater)getApplicationContext().getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout ll= (LinearLayout)inflater.inflate(R.layout.time_picker, null, false);
-        TimePicker cv=(TimePicker) ll.getChildAt(0);
+        final TimePicker cv=(TimePicker) ll.getChildAt(0);
         new AlertDialog.Builder(NewEvent.this)
                 .setTitle("Event Calendar")
                 .setMessage("Click to schedule or view events.")
                 .setView(ll)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        TimeButton.setText(cv.getCurrentHour()+":"+cv.getCurrentMinute());
                         DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
                         TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
                         SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);
@@ -245,9 +239,7 @@ public class NewEvent extends AppCompatActivity {
                         EventNameButton.setEnabled(true);EventNameButton.setVisibility(View.VISIBLE);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        DateButton.setText("");
-                    }
+                    public void onClick(DialogInterface dialog, int whichButton) {}
                 }
         ).show();
     }
