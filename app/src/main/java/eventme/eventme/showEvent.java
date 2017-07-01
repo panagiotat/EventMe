@@ -38,15 +38,12 @@ public class showEvent extends AppCompatActivity {
 
         date = (Button) findViewById(R.id.date);
 
-        time = (Button) findViewById(R.id.hour);
-
-        location = (Button) findViewById(R.id.location);
+       // location = (Button) findViewById(R.id.location);
 
         EventName = (Button) findViewById(R.id.ename);
         EventName.setText(mIntent.getStringExtra("Name"));
-        time.setText(mIntent.getStringExtra("Time"));
-        date.setText(mIntent.getStringExtra("Date"));
-        location.setText(mIntent.getStringExtra("Location"));
+        date.setText(mIntent.getStringExtra("Date")+"  "+ mIntent.getStringExtra("Time"));
+       // location.setText(mIntent.getStringExtra("Location"));
         description.setMovementMethod(new ScrollingMovementMethod());   //description scrolls down (shows 4lines)
 
         description.setText(mIntent.getStringExtra("Description"));
@@ -57,12 +54,13 @@ public class showEvent extends AppCompatActivity {
         takeUserName(); //sets username in textview under image
 
         image = (ImageView) findViewById(R.id.imageView);
+
+
+        String tempForImageRetreival=mIntent.getStringExtra("Date");
+
+        retrieveImage(temp,tempForImageRetreival);
         image.setAdjustViewBounds(true);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-
-        retrieveImage(temp,date.getText().toString());
-
 
 
 
