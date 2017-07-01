@@ -170,7 +170,7 @@ public class NewEvent extends AppCompatActivity {
                 ||locationbutton.equals("")||eventname.equals(getResources().getString(R.string.checkEventsName))
                 ||eventname.equals("") )
         {
-            Toast.makeText(getBaseContext(),"Complete all the fields", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(),getString(R.string.completeallfields), Toast.LENGTH_LONG).show();
 
         }
         else {

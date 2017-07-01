@@ -85,7 +85,7 @@ public class SignupActivity extends AppCompatActivity {
     }
     public void onSignupSuccess()
     {
-        Toast.makeText(SignupActivity.this, "Account created.",
+        Toast.makeText(SignupActivity.this,getString(R.string.accountCreated),
                 Toast.LENGTH_SHORT).show();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("email", _emailText.getText().toString());
@@ -98,7 +98,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(),getString(R.string.loginfailed), Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -115,7 +115,7 @@ public class SignupActivity extends AppCompatActivity {
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+            _nameText.setError(getString(R.string.atleastcharacters));
             valid = false;
         } else {
             _nameText.setError(null);
@@ -124,7 +124,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError(getString(R.string.atleastcharacters));
             valid = false;
         } else {
             _emailText.setError(null);
@@ -133,14 +133,14 @@ public class SignupActivity extends AppCompatActivity {
 
 
         if (password.isEmpty() || password.length() < 4) {
-            _passwordText.setError("Password is small");
+            _passwordText.setError(getString(R.string.passwordissmall));
             valid = false;
         } else {
             _passwordText.setError(null);
         }
 
         if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
+            _reEnterPasswordText.setError(getString(R.string.passworddonotmatch));
             valid = false;
         } else {
             _reEnterPasswordText.setError(null);
