@@ -155,9 +155,11 @@ public class Profile extends AppCompatActivity {
     }
     public void logOut(View view)
     {
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("email", "");
+        editor.apply();
         Intent intent = new Intent(this,Homepage.class);
-        intent.putExtra("email","");
         startActivity(intent);
 
     }
