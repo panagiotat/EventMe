@@ -20,7 +20,7 @@
         android:background="@android:color/transparent"
         android:onClick="changePhoto"
         android:adjustViewBounds="true"
-        android:src="@drawable/blue"
+        android:src="@drawable/profile"
         tools:ignore="ContentDescription,NestedWeights" />
 
     <EditText

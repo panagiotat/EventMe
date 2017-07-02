@@ -100,7 +100,19 @@ public class profileEdit extends AppCompatActivity {
             FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".", ",")).child("username").setValue(newname);
             FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".", ",")).child("password").setValue(newpass);
             mStorageRef = FirebaseStorage.getInstance().getReference();
+            mStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+
+                }
+            });
             buttonUploadImage.setDrawingCacheEnabled(true);
             buttonUploadImage.buildDrawingCache();
             Bitmap bitmap = buttonUploadImage.getDrawingCache();

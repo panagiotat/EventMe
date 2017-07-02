@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,26 +49,23 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        buttonUploadImage = (ImageView) findViewById(R.id.photo_magaziou);
         nswipe = (SwipeRefreshLayout) findViewById(R.id.swiperefresh); //refresh while scrolling down
         nswipe.setOnRefreshListener(this);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
-
         //Tab 1
         TabHost.TabSpec spec = host.newTabSpec("Informations");
         spec.setContent(R.id.tab1);
         spec.setIndicator("Informations");
         host.addTab(spec);
-
         //Tab 2
         spec = host.newTabSpec("Events");
         spec.setContent(R.id.tab2);
         spec.setIndicator("Events");
         host.addTab(spec);
-
         list=(ListView)findViewById(R.id.list);
-
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -87,11 +85,7 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
         name = (TextView) findViewById(R.id.onoma);
         updateList();
         email = (TextView) findViewById(R.id.email_user);
-
         email.setText( "Email: " + email2);
-
-
-
     }
     @Override           //method for refresh
     public void onRefresh() {
@@ -128,7 +122,6 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
         email2 = intent.getStringExtra("email");
         yourprofile=intent.getBooleanExtra("yourprofile",true);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
         DatabaseReference ref = database.getReference().child("Users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -165,10 +158,14 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 throw databaseError.toException();
             }
         });
-        buttonUploadImage = (ImageView) findViewById(R.id.photo_magaziou);
+        StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
+        Log.i("TAGGGG",email2);
+        StorageReference islandRef = mStorageRef.child(email2+".jpg");
+        Glide.with(this)
+                .using(new FirebaseImageLoader())
+                .load(islandRef)
+                .into(buttonUploadImage);
         buttonUploadImage.setAdjustViewBounds(true);
-        buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        retrieveImage(email2);
     }
 
     private ArrayList<Event> sortListView(ArrayList<Event> list)
@@ -237,17 +234,6 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
         return list ;
 
     }
-    private void retrieveImage(String email)
-    {
-        StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
-        StorageReference islandRef = mStorageRef.child(email+".jpg");
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
-                .load(islandRef)
-                .into(buttonUploadImage);
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -257,7 +243,6 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
         }
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
