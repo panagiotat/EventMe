@@ -247,7 +247,16 @@ public class NewEvent extends AppCompatActivity {
                 .setView(ll)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        TimeButton.setText(cv.getCurrentHour()+":"+cv.getCurrentMinute());
+                        String a=null;
+                        if(cv.getCurrentHour()<10)
+                        {
+                            a="0"+cv.getCurrentHour().toString();
+                        }
+                        else
+                        {
+                            a=cv.getCurrentMinute().toString();
+                        }
+                        TimeButton.setText(cv.getCurrentHour()+":"+a);
                         DateButton.setEnabled(true);DateButton.setVisibility(View.VISIBLE);
                         TimeButton.setEnabled(true);TimeButton.setVisibility(View.VISIBLE);
                         SaveButton.setEnabled(true);SaveButton.setVisibility(View.VISIBLE);

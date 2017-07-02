@@ -227,6 +227,11 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                 String date1 = e1.getDate();
                 String date2 = e2.getDate();
                 String e1imera = null , e1minas = null , e1xronia = null , e2imera = null , e2minas = null , e2xronia = null ;
+                int e1day = 0 ; int e1month =0 ; int e1year = 0 ;
+                int e2day = 0 ; int e2month=0; int e2year = 0 ;
+                String result1 = null;
+                String result2 = null ;
+                String compare = "b" ;
 
                 String currentdate1 , currentdate2 ;
 

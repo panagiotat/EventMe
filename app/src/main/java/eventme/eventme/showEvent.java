@@ -3,13 +3,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,13 +30,17 @@ import com.google.firebase.storage.StorageReference;
 
 
 
-public class showEvent extends AppCompatActivity {
+public class showEvent extends AppCompatActivity implements OnMapReadyCallback {
 
-    private Button date,time,location,EventName;
+    private Button date, time, location, EventName;
     private TextView description;
     private ImageView image;
     private String temp;
     private TextView text;
+    private ScrollView mainScrollView;
+    private ImageView transparentImageView;
+    private MapFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,47 +48,77 @@ public class showEvent extends AppCompatActivity {
 
         Intent mIntent = getIntent();
 
-        description=(TextView) findViewById(R.id.Description);
+        description = (TextView) findViewById(R.id.Description);
 
         date = (Button) findViewById(R.id.date);
 
-       // location = (Button) findViewById(R.id.location);
+        // location = (Button) findViewById(R.id.location);
 
         EventName = (Button) findViewById(R.id.ename);
         EventName.setText(mIntent.getStringExtra("Name"));
-        date.setText(mIntent.getStringExtra("Date")+"  "+ mIntent.getStringExtra("Time"));
-       // location.setText(mIntent.getStringExtra("Location"));
+        date.setText(mIntent.getStringExtra("Date") + "  " + mIntent.getStringExtra("Time"));
+        // location.setText(mIntent.getStringExtra("Location"));
         description.setMovementMethod(new ScrollingMovementMethod());   //description scrolls down (shows 4lines)
 
         description.setText(mIntent.getStringExtra("Description"));
 
 
         text = (TextView) findViewById(R.id.name);
-        temp =mIntent.getStringExtra("Email");
+        temp = mIntent.getStringExtra("Email");
         takeUserName(); //sets username in textview under image
 
         image = (ImageView) findViewById(R.id.imageView);
 
 
-        String tempForImageRetreival=mIntent.getStringExtra("Date");
+        String tempForImageRetreival = mIntent.getStringExtra("Date");
 
-        retrieveImage(temp,tempForImageRetreival);
+        retrieveImage(temp, tempForImageRetreival);
         image.setAdjustViewBounds(true);
         image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        mainScrollView = (ScrollView) findViewById(R.id.scroll);
+        transparentImageView = (ImageView) findViewById(R.id.transparent_image);
+        transparentImageView.setOnTouchListener(new View.OnTouchListener() {
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
 
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // Close The Database
 
     }
-    private void retrieveImage(String email,String date)
-    {
-        StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
-        StorageReference islandRef = mStorageRef.child(email+date.replace("/","")+".jpg");
+
+    private void retrieveImage(String email, String date) {
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference islandRef = mStorageRef.child(email + date.replace("/", "") + ".jpg");
 
         Glide.with(this)
                 .using(new FirebaseImageLoader())
@@ -83,15 +127,14 @@ public class showEvent extends AppCompatActivity {
 
     }
 
-    public void goToShop(View v)
-    {
+    public void goToShop(View v) {
         Intent intent = new Intent(showEvent.this, Profile.class);
-        intent.putExtra("email",temp);
-        intent.putExtra("yourprofile",false);
+        intent.putExtra("email", temp);
+        intent.putExtra("yourprofile", false);
         startActivity(intent);
     }
 
-    private void takeUserName(){
+    private void takeUserName() {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -99,11 +142,9 @@ public class showEvent extends AppCompatActivity {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    User a= ds.getValue(User.class);
-                    if(a.getEmail().equals(temp.replace(".",",")))
-                    {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    User a = ds.getValue(User.class);
+                    if (a.getEmail().equals(temp.replace(".", ","))) {
                         text.setText(a.getUsername());
 
                     }
@@ -111,8 +152,26 @@ public class showEvent extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        CameraPosition googlePlex = CameraPosition.builder()
+                .target(new LatLng(39.963867, 23.380549))
+                .zoom(16)
+                .bearing(0)
+                .tilt(45)
+                .build();
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(39.963867, 23.380549))
+                .title("Ποσείδι")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.location)));
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
+    }
 }
