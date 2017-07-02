@@ -24,12 +24,12 @@ import java.io.ByteArrayOutputStream;
 
 public class profileEdit extends AppCompatActivity {
 
-    private EditText et_name ;
-    private EditText et_pass ;
+    private EditText et_name;
+    private EditText et_pass;
     private EditText et_email;
-    private ImageView buttonUploadImage ;
+    private ImageView buttonUploadImage;
     private StorageReference mStorageRef;
-    private  static final int SELECT_PICTURE = 0 ;
+    private static final int SELECT_PICTURE = 0;
 
 
     @Override
@@ -59,7 +59,7 @@ public class profileEdit extends AppCompatActivity {
         String ce = intent.getStringExtra("stringemail");
 
         et_name.setText(cn);
-
+        et_pass.setText(intent.getStringExtra("password"));
         et_email.setText(ce);
     }
 
@@ -89,41 +89,43 @@ public class profileEdit extends AppCompatActivity {
         }
     }
 
-    public void saveChanges(View view)
-    {
+    public void saveChanges(View view) {
         String newname = et_name.getText().toString();
         String newemail = et_email.getText().toString();
-        FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".",",")).child("username").setValue(newname);
-        String newpass= et_pass.getText().toString();
-        FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".",",")).child("password").setValue(newpass);
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        buttonUploadImage.setDrawingCacheEnabled(true);
-        buttonUploadImage.buildDrawingCache();
-        Bitmap bitmap = buttonUploadImage.getDrawingCache();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-        StorageReference mref = mStorageRef.child(newemail+".jpg");
-        UploadTask uploadTask = mref.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Log.i("storage","SUCCESS");
-            }
-        });
+        String newpass = et_pass.getText().toString();
+        if (newname.length() < 3 || newpass.length() < 6) {
+            Toast.makeText(profileEdit.this, getString(R.string.completeallfields),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".", ",")).child("username").setValue(newname);
+            FirebaseDatabase.getInstance().getReference().child("Users").child(newemail.replace(".", ",")).child("password").setValue(newpass);
+            mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        Toast.makeText(profileEdit.this, "Done!",
-                Toast.LENGTH_SHORT).show();
-        this.finish();
+            buttonUploadImage.setDrawingCacheEnabled(true);
+            buttonUploadImage.buildDrawingCache();
+            Bitmap bitmap = buttonUploadImage.getDrawingCache();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+            StorageReference mref = mStorageRef.child(newemail + ".jpg");
+            UploadTask uploadTask = mref.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Log.i("storage", "SUCCESS");
+                }
+            });
 
+            Toast.makeText(profileEdit.this, "Done!",
+                    Toast.LENGTH_SHORT).show();
+            this.finish();
+
+        }
     }
-
-
-
 }

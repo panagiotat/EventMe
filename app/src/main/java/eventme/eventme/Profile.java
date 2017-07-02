@@ -3,6 +3,7 @@ package eventme.eventme;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,14 +31,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
-public class Profile extends AppCompatActivity {
+public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private TextView name;
     private TextView email;
-    private String email2,username;
+    private String email2,username,password;
     private ImageView buttonUploadImage ;
-    private boolean yourprofile;
     private ListView list;
+    private boolean yourprofile;
+    private SwipeRefreshLayout nswipe;
     private StorageReference mStorageRef;
     private ArrayList<Event> events=new ArrayList<>();
     private ArrayList<StorageReference> imageUrl=new ArrayList<>();
@@ -46,6 +48,8 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        nswipe = (SwipeRefreshLayout) findViewById(R.id.swiperefresh); //refresh while scrolling down
+        nswipe.setOnRefreshListener(this);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         TabHost host = (TabHost)findViewById(R.id.tabHost);
         host.setup();
@@ -61,7 +65,7 @@ public class Profile extends AppCompatActivity {
         spec.setContent(R.id.tab2);
         spec.setIndicator("Events");
         host.addTab(spec);
-        updateList();
+
         list=(ListView)findViewById(R.id.list);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,39 +85,7 @@ public class Profile extends AppCompatActivity {
 
         });
         name = (TextView) findViewById(R.id.onoma);
-        Intent intent=getIntent();
-        email2 = intent.getStringExtra("email");
-        yourprofile=intent.getBooleanExtra("yourprofile",true);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference ref = database.getReference().child("Users");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    User a= ds.getValue(User.class);
-                    if(a.getEmail().equals(email2.replace(".",",")))
-                    {
-                        username = a.getUsername();
-                        name.setText("Username: " + a.getUsername());
-
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        buttonUploadImage = (ImageView) findViewById(R.id.photo_magaziou);
-        buttonUploadImage.setAdjustViewBounds(true);
-        buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        retrieveImage(email2);
-
+        updateList();
         email = (TextView) findViewById(R.id.email_user);
 
         email.setText( "Email: " + email2);
@@ -121,7 +93,11 @@ public class Profile extends AppCompatActivity {
 
 
     }
-
+    @Override           //method for refresh
+    public void onRefresh() {
+        updateList();
+        nswipe.setRefreshing(false);
+    }
     private void retrieveData(DataSnapshot dataSnapshot)
     {
         events.clear();
@@ -148,9 +124,36 @@ public class Profile extends AppCompatActivity {
         list.setAdapter(adapter);
     }
     private void updateList(){
+        Intent intent=getIntent();
+        email2 = intent.getStringExtra("email");
+        yourprofile=intent.getBooleanExtra("yourprofile",true);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference ref = database.getReference().child("Event");
+        DatabaseReference ref = database.getReference().child("Users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User a= ds.getValue(User.class);
+                    if(a.getEmail().equals(email2.replace(".",",")))
+                    {
+                        username = a.getUsername();
+                        password=a.getPassword();
+                        name.setText("Username: " + a.getUsername());
+
+                    }
+                }
+
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        ref = database.getReference().child("Event");
 
         ref.addListenerForSingleValueEvent(new ValueEventListener()  {
             @Override
@@ -162,6 +165,10 @@ public class Profile extends AppCompatActivity {
                 throw databaseError.toException();
             }
         });
+        buttonUploadImage = (ImageView) findViewById(R.id.photo_magaziou);
+        buttonUploadImage.setAdjustViewBounds(true);
+        buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        retrieveImage(email2);
     }
 
     private ArrayList<Event> sortListView(ArrayList<Event> list)
@@ -245,7 +252,10 @@ public class Profile extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.threedots,menu);
+        if(yourprofile)
+        {
+            getMenuInflater().inflate(R.menu.threedots,menu);
+        }
         return true;
     }
 
@@ -278,7 +288,7 @@ public class Profile extends AppCompatActivity {
 
             intent.putExtra("stringname",username);
             intent.putExtra("stringemail",email2);
-
+            intent.putExtra("password",password);
             startActivity(intent);
             return true ;
         }

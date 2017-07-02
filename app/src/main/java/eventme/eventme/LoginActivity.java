@@ -77,14 +77,12 @@ public class LoginActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         }
-        _loginButton.setEnabled(false);
-
         final String email = _email.getText().toString();
         final String password = _passwordText.getText().toString();
         flag=true;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference ref = database.getReference().child("Users");
+        DatabaseReference ref = database.getReference().child("Use`rs");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -118,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
-        _loginButton.setEnabled(true);
     }
 
     public boolean validate() {
