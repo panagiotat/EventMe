@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         flag=true;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        DatabaseReference ref = database.getReference().child("Use`rs");
+        DatabaseReference ref = database.getReference().child("Users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
