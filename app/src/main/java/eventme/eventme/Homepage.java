@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,9 +28,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 
@@ -227,12 +231,6 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                 String date1 = e1.getDate();
                 String date2 = e2.getDate();
                 String e1imera = null , e1minas = null , e1xronia = null , e2imera = null , e2minas = null , e2xronia = null ;
-                int e1day = 0 ; int e1month =0 ; int e1year = 0 ;
-                int e2day = 0 ; int e2month=0; int e2year = 0 ;
-                String result1 = null;
-                String result2 = null ;
-                String compare = "b" ;
-
                 String currentdate1 , currentdate2 ;
 
                 int temp1 = 0 ;
@@ -255,7 +253,7 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                     }
                 }
 
-                currentdate1 = e1xronia+e1minas+e1imera ;
+                currentdate1 = (e1xronia+"-"+e1minas+"-"+e1imera).replace(" ","");
 
                 int temp2 = 0 ;
                 StringTokenizer tokenizer2 = new StringTokenizer(date2, "/");
@@ -277,9 +275,31 @@ public class Homepage extends AppCompatActivity implements SwipeRefreshLayout.On
                     }
                 }
 
-                currentdate2 = e2xronia+e2minas+e2imera ;
+                currentdate2 = (e2xronia+"-"+e2minas+"-"+e2imera).replace(" ","") ;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date d1=new Date(),d2=new Date();
+                try {
+                    d1 = sdf.parse(currentdate1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    d2 = sdf.parse(currentdate2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (d1.after(d2)) {
+                    return 1;
+                }
 
-                return  currentdate1.compareTo(currentdate2);
+                if (d1.before(d2)) {
+                    return -1;
+                }
+
+                if (d1.equals(d2)) {
+                    return 0;
+                }
+                return  0;
 
             }
 
