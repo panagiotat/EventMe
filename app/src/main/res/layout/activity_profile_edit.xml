@@ -9,7 +9,7 @@
     android:background="@drawable/backphoto">
 
 
-    <ImageButton
+    <ImageView
 
         android:id="@+id/userphoto"
         android:layout_width="wrap_content"

@@ -241,7 +241,6 @@ public class Profile extends AppCompatActivity implements SwipeRefreshLayout.OnR
     {
         StorageReference mStorageRef= FirebaseStorage.getInstance().getReference();
         StorageReference islandRef = mStorageRef.child(email+".jpg");
-
         Glide.with(this)
                 .using(new FirebaseImageLoader())
                 .load(islandRef)

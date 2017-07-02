@@ -171,11 +171,9 @@ public class NewEvent extends AppCompatActivity {
                 ||eventname.equals("") )
         {
             Toast.makeText(getBaseContext(),getString(R.string.completeallfields), Toast.LENGTH_LONG).show();
-
         }
-        else {
-
-
+        else
+        {
             database.child("Event").push().setValue(new Event(email, DateButton.getText().toString(), TimeButton.getText().toString(), LocationButton.getText().toString(), editText.getText().toString(), EventNameButton.getText().toString()));
             mStorageRef = FirebaseStorage.getInstance().getReference();
             buttonUploadImage.setDrawingCacheEnabled(true);
