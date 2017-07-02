@@ -114,53 +114,11 @@ public class Profile extends AppCompatActivity {
         buttonUploadImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         retrieveImage(email2);
 
-        if(yourprofile)
-        {
-            findViewById(R.id.grammoula).setVisibility(View.VISIBLE);
-            findViewById(R.id.logout).setVisibility(View.VISIBLE);
-            findViewById(R.id.add_event).setVisibility(View.VISIBLE);
-            findViewById(R.id.editProfilebtn).setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            findViewById(R.id.grammoula).setVisibility(View.INVISIBLE);
-            findViewById(R.id.logout).setVisibility(View.INVISIBLE);
-            findViewById(R.id.add_event).setVisibility(View.INVISIBLE);
-            findViewById(R.id.editProfilebtn).setVisibility(View.INVISIBLE);
-        }
-
-
         email = (TextView) findViewById(R.id.email_user);
 
         email.setText( "Email: " + email2);
 
 
-
-    }
-
-    public void newEvent(View v)
-    {
-        Intent intent = new Intent(Profile.this, NewEvent.class);
-        startActivity(intent);
-    }
-
-    public void editProfile(View view)
-    {
-        Intent intent = new Intent(Profile.this, profileEdit.class);
-
-        intent.putExtra("stringname",username);
-        intent.putExtra("stringemail",email2);
-
-        startActivity(intent);
-    }
-    public void logOut(View view)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);;
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("email", "");
-        editor.apply();
-        Intent intent = new Intent(this,Homepage.class);
-        startActivity(intent);
 
     }
 
@@ -282,6 +240,50 @@ public class Profile extends AppCompatActivity {
                 .load(islandRef)
                 .into(buttonUploadImage);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.threedots,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        if(id == R.id.ab)
+        {
+            Intent intent = new Intent(Profile.this, NewEvent.class);
+            startActivity(intent);
+            return true ;
+        }
+
+        if(id == R.id.ex)
+        {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);;
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("email", "");
+            editor.apply();
+            Intent intent = new Intent(this,Homepage.class);
+            startActivity(intent);
+            return true;
+        }
+
+        if(id == R.id.edp)
+        {
+            Intent intent = new Intent(Profile.this, profileEdit.class);
+
+            intent.putExtra("stringname",username);
+            intent.putExtra("stringemail",email2);
+
+            startActivity(intent);
+            return true ;
+        }
+
+        return true;
     }
 
 

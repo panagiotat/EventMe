@@ -12,45 +12,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.35"
-        >
-
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="41dp"
-            android:layout_weight="1"
-            android:background="#4e66de"
-            android:onClick="logOut"
-            android:text="@string/exit"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            tools:ignore="NestedWeights" />
-
-        <View
-            android:layout_width="3sp"
-            android:id="@+id/grammoula"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF" />
-
-        <Button
-            android:id="@+id/add_event"
-            android:layout_width="wrap_content"
-            android:layout_height="41dp"
-            android:layout_weight="1"
-            android:onClick="newEvent"
-            android:text="@string/newevent"
-            android:background="#4e66de"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
         android:layout_weight="1.6"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
@@ -151,24 +112,5 @@
         </TabHost>
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:gravity="center">
 
-        <Button
-            android:id="@+id/editProfilebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/edit"
-            android:textAllCaps="false"
-            android:onClick="editProfile"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:background="@drawable/shapebtn"
-            tools:ignore="UnusedAttribute"
-            android:backgroundTint="#4e66de"/>
-
-    </LinearLayout>
 </LinearLayout>

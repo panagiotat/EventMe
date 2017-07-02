@@ -9,7 +9,8 @@
         android:supportsRtl="true">
         <activity
             android:name=".Homepage"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +30,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".Profile"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".profileEdit"
             android:theme="@style/NoActionBar" />
