@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,6 +40,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 
 public class NewEvent extends AppCompatActivity {
@@ -50,6 +54,7 @@ public class NewEvent extends AppCompatActivity {
     private EditText editText;
     private SharedPreferences preferences;
     String email;
+    private Geocoder geocoder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,7 @@ public class NewEvent extends AppCompatActivity {
         EventNameButton=(Button) findViewById(R.id.NameButton);
         editText=(EditText) findViewById(R.id.editText);
 
+        geocoder=new Geocoder(this);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -141,7 +147,16 @@ public class NewEvent extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                LocationButton.setText( input.getText().toString());
+                String loc=input.getText().toString();
+                List<Address> list= null;
+                try {
+                    list = geocoder.getFromLocationName(loc,1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    input.setText("invalid");
+                }
+
+                LocationButton.setText(loc);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,7 +183,7 @@ public class NewEvent extends AppCompatActivity {
                 || timebutton.equals(getResources().getString(R.string.checkhour))
                 ||locationbutton.equals(getResources().getString(R.string.checkLocation))
                 ||locationbutton.equals("")||eventname.equals(getResources().getString(R.string.checkEventsName))
-                ||eventname.equals("") )
+                ||eventname.equals("") || locationbutton.equals("invalid") )
         {
             Toast.makeText(getBaseContext(),getString(R.string.completeallfields), Toast.LENGTH_LONG).show();
         }
